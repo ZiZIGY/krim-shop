@@ -1,7 +1,4 @@
 <script setup lang="ts">
-  import type { CarouselApi } from '../ui/carousel';
-  import { motion } from 'motion-v';
-
   interface Product {
     id: string;
     name: string;
@@ -103,117 +100,20 @@
       },
     ],
   });
-
-  const api = ref<CarouselApi>();
-
-  const setApi = (carouselApi: CarouselApi) => {
-    if (!carouselApi) return;
-    api.value = carouselApi;
-  };
-
-  // Methods
-  const handleFavoriteToggle = (productId: string) => {
-    console.log('Toggle favorite:', productId);
-  };
-
-  const handleQuickView = (productId: string) => {
-    console.log('Quick view:', productId);
-  };
-
-  const handleAddToCart = (productId: string) => {
-    console.log('Add to cart:', productId);
-  };
-
-  const handleAddToCompare = (productId: string) => {
-    console.log('Add to compare:', productId);
-  };
 </script>
 
 <template>
-  <section class="py-16 bg-muted/30">
-    <div class="container mx-auto px-4">
-      <!-- Заголовок секции -->
-      <motion.div
-        :initial="{ opacity: 0, y: 20 }"
-        :while-in-view="{ opacity: 1, y: 0 }"
-        :transition="{ duration: 0.6 }"
-        class="mb-12"
-      >
-        <h2 class="text-3xl font-bold mb-4"> Новинки </h2>
-        <p class="text-muted-foreground max-w-2xl">
-          Свежие поступления в нашем каталоге
-        </p>
-      </motion.div>
-
-      <!-- Слайдер товаров -->
-      <motion.div
-        :initial="{ opacity: 0 }"
-        :while-in-view="{ opacity: 1 }"
-        :transition="{ duration: 0.8, delay: 0.2 }"
-        class="relative"
-      >
-        <UiCarousel
-          :opts="{
-            loop: true,
-            align: 'start',
-            slidesToScroll: 1,
-          }"
-          @init-api="setApi"
-        >
-          <UiCarouselContent class="-ml-4">
-            <UiCarouselItem
-              v-for="(product, index) in products"
-              :key="product.id"
-              class="pl-4 basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4"
-            >
-              <motion.div
-                :initial="{ opacity: 0, scale: 0.9 }"
-                :while-in-view="{ opacity: 1, scale: 1 }"
-                :transition="{
-                  duration: 0.5,
-                  delay: index * 0.1,
-                }"
-                :while-hover="{ scale: 1.02 }"
-              >
-                <ModuleCatalogCard
-                  :product="product"
-                  @favorite-toggle="handleFavoriteToggle"
-                  @quick-view="handleQuickView"
-                  @add-to-cart="handleAddToCart"
-                  @add-to-compare="handleAddToCompare"
-                />
-              </motion.div>
-            </UiCarouselItem>
-          </UiCarouselContent>
-          <ClientOnly>
-            <UiCarouselNext />
-            <UiCarouselPrevious />
-          </ClientOnly>
-        </UiCarousel>
-      </motion.div>
-
-      <motion.div
-        :initial="{ opacity: 0, y: 20 }"
-        :while-in-view="{ opacity: 1, y: 0 }"
-        :transition="{ duration: 0.6, delay: 0.6 }"
-        class="text-center mt-12"
-      >
-        <UiButton
-          variant="outline"
-          size="lg"
-          as-child
-        >
-          <NuxtLink to="/catalog">
-            Смотреть все новинки
-            <Icon
-              name="mdi:arrow-right"
-              class="h-4 w-4 ml-2"
-            />
-          </NuxtLink>
-        </UiButton>
-      </motion.div>
-    </div>
-  </section>
+  <WidgetShowcase
+    item-key="id"
+    :items="products"
+    slider-title="Новинки"
+    slider-description="Свежие поступления в нашем каталоге"
+    slider-button-text="Смотреть все новинки"
+    slider-button-link="/catalog"
+    :show-slider-button="true"
+  >
+    <template #default="{ item }">
+      <ModuleCatalogCard :product="item" />
+    </template>
+  </WidgetShowcase>
 </template>
-
-<style scoped></style>

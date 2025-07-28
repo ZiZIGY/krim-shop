@@ -42,6 +42,7 @@
   --color-sidebar-ring: var(--sidebar-ring);
   --animate-accordion-down: accordion-down 0.2s ease-out;
   --animate-accordion-up: accordion-up 0.2s ease-out;
+
   @keyframes accordion-down {
     from {
       height: 0;
@@ -58,6 +59,12 @@
       height: 0;
     }
   }
+}
+
+@utility container {
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+  max-width: 100rem;
 }
 
 :root {

@@ -196,7 +196,7 @@
 
 <template>
   <div class="container mx-auto px-4 py-8">
-    <div class="flex gap-8">
+    <div class="flex flex-col lg:flex-row gap-8">
       <!-- Боковая панель с фильтрами -->
       <aside class="hidden lg:block w-80 flex-shrink-0">
         <div class="sticky top-24">
@@ -232,41 +232,31 @@
         </div>
 
         <!-- Хлебные крошки -->
-        <nav class="mb-6">
-          <ol class="flex items-center space-x-2 text-sm text-muted-foreground">
-            <li>
-              <NuxtLink
-                to="/"
-                class="hover:text-foreground transition-colors"
-              >
-                Главная
-              </NuxtLink>
-            </li>
-            <Icon
-              name="mdi:chevron-right"
-              class="h-4 w-4"
-            />
-            <li>
-              <NuxtLink
-                to="/catalog"
-                class="hover:text-foreground transition-colors"
-              >
-                Каталог
-              </NuxtLink>
-            </li>
-            <Icon
-              v-if="currentCategory"
-              name="mdi:chevron-right"
-              class="h-4 w-4"
-            />
-            <li
-              v-if="currentCategory"
-              class="text-foreground font-medium"
-            >
-              {{ currentCategory }}
-            </li>
-          </ol>
-        </nav>
+        <UiBreadcrumb class="mb-6">
+          <UiBreadcrumbList>
+            <UiBreadcrumbItem>
+              <UiBreadcrumbLink as-child>
+                <NuxtLink to="/">Главная</NuxtLink>
+              </UiBreadcrumbLink>
+            </UiBreadcrumbItem>
+
+            <UiBreadcrumbSeparator />
+
+            <UiBreadcrumbItem>
+              <UiBreadcrumbLink as-child>
+                <NuxtLink to="/catalog">Каталог</NuxtLink>
+              </UiBreadcrumbLink>
+            </UiBreadcrumbItem>
+
+            <UiBreadcrumbSeparator v-if="currentCategory" />
+
+            <UiBreadcrumbItem v-if="currentCategory">
+              <span class="text-foreground font-medium">
+                {{ currentCategory }}
+              </span>
+            </UiBreadcrumbItem>
+          </UiBreadcrumbList>
+        </UiBreadcrumb>
 
         <!-- Заголовок страницы -->
         <div class="mb-8">
@@ -297,14 +287,10 @@
       </main>
     </div>
 
-    <!-- Мобильный фильтр в модальном окне -->
-    <UiDialog v-model:open="showMobileFilters">
-      <UiDialogContent class="max-w-md">
-        <UiDialogHeader>
-          <UiDialogTitle>Фильтры</UiDialogTitle>
-        </UiDialogHeader>
-
-        <div class="py-4">
+    <!-- Мобильный фильтр в drawer -->
+    <UiDrawer v-model:open="showMobileFilters">
+      <UiDrawerContent class="h-[85vh]">
+        <div class="flex-1 overflow-y-auto p-6">
           <ModuleCatalogFilter
             :config="filterConfig"
             :initial-filters="activeFilters"
@@ -312,17 +298,9 @@
           />
         </div>
 
-        <UiDialogFooter>
-          <UiButton
-            variant="outline"
-            @click="handleResetFilters"
-          >
-            Сбросить
-          </UiButton>
-          <UiButton @click="showMobileFilters = false"> Применить </UiButton>
-        </UiDialogFooter>
-      </UiDialogContent>
-    </UiDialog>
+        <!-- Убираем дублирующиеся кнопки - они уже есть в фильтре -->
+      </UiDrawerContent>
+    </UiDrawer>
   </div>
 </template>
 

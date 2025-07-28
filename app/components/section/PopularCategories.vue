@@ -109,7 +109,7 @@
             class="block"
           >
             <UiCard
-              class="h-full overflow-hidden hover:shadow-lg transition-all duration-300 p-0"
+              class="h-full overflow-hidden hover:shadow-lg transition-all duration-300 p-0 gap-0"
             >
               <!-- Изображение -->
               <div class="relative h-48 overflow-hidden">
@@ -124,11 +124,9 @@
                 />
 
                 <!-- Количество товаров -->
-                <div
-                  class="absolute top-3 right-3 bg-background/90 backdrop-blur-sm px-2 py-1 rounded-md text-xs font-medium"
-                >
+                <UiBadge class="absolute top-3 right-3">
                   {{ category.productCount }} товаров
-                </div>
+                </UiBadge>
               </div>
 
               <!-- Контент -->

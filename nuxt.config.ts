@@ -17,12 +17,27 @@ export default defineNuxtConfig({
     'motion-v/nuxt',
     'shadcn-nuxt',
     '@nuxtjs/color-mode',
+    '@nuxtjs/sitemap',
   ],
 
   css: ['~/assets/css/tailwind.css'],
 
+  site: {
+    url: process.env.SITE_URL,
+    name: process.env.SITE_NAME,
+  },
+
   app: {
     pageTransition: { name: 'page', mode: 'out-in' },
+  },
+
+  runtimeConfig: {
+    public: {
+      siteName: process.env.SITE_NAME,
+      phoneNumber: process.env.PHONE_NUMBER,
+      deliveryTime: process.env.DELIVERY_TIME,
+      email: process.env.EMAIL,
+    },
   },
 
   shadcn: {

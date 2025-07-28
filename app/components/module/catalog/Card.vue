@@ -64,27 +64,20 @@
       <div
         class="absolute top-2 right-2 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
       >
-        <UiButton
-          size="icon"
-          variant="secondary"
-          class="h-7 w-7 bg-background/80 backdrop-blur-sm hover:bg-background"
-        >
-          <Icon
-            name="mdi:heart-outline"
-            class="h-3.5 w-3.5"
-          />
-        </UiButton>
+        <WidgetFavorite :product-id="product.id" />
 
-        <UiButton
-          size="icon"
-          variant="secondary"
-          class="h-7 w-7 bg-background/80 backdrop-blur-sm hover:bg-background"
-        >
-          <Icon
-            name="mdi:eye-outline"
-            class="h-3.5 w-3.5"
-          />
-        </UiButton>
+        <NuxtLink :to="`/product/${product.id}`">
+          <UiButton
+            size="icon"
+            variant="secondary"
+            class="h-7 w-7 bg-background/80 backdrop-blur-sm hover:bg-background"
+          >
+            <Icon
+              name="mdi:eye-outline"
+              class="h-3.5 w-3.5"
+            />
+          </UiButton>
+        </NuxtLink>
       </div>
 
       <!-- Статус наличия -->

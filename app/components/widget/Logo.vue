@@ -3,7 +3,7 @@
     to="/"
     class="text-2xl font-bold"
   >
-    whitemebel
+    {{ $config.public.siteName }}
   </NuxtLink>
 </template>
 
