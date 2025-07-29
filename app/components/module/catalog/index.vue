@@ -199,7 +199,7 @@
     <div class="flex flex-col lg:flex-row gap-8">
       <!-- Боковая панель с фильтрами -->
       <aside class="hidden lg:block w-80 flex-shrink-0">
-        <div class="sticky top-24">
+        <div class="sticky top-[8.625rem]">
           <ModuleCatalogFilter
             :config="filterConfig"
             :initial-filters="activeFilters"

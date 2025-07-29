@@ -1,9 +1,9 @@
 <script lang="ts" setup></script>
 
 <template>
-  <div>
+  <div class="flex flex-col justify-between min-h-svh">
     <AppHeader />
-    <main>
+    <main class="flex-1">
       <slot />
     </main>
     <AppFooter />

@@ -30,7 +30,15 @@
 
 <template>
   <section class="py-16 bg-muted/30">
-    <div class="container mx-auto px-4">
+    <UiCarousel
+      class="container mx-auto px-4"
+      :opts="{
+        loop: true,
+        align: 'start',
+        slidesToScroll: 1,
+      }"
+      @init-api="setApi"
+    >
       <!-- Заголовок секции -->
       <motion.div
         v-if="sliderTitle || sliderDescription"
@@ -39,11 +47,23 @@
         :transition="{ duration: 0.6 }"
         class="mb-12"
       >
-        <h2
-          v-if="sliderTitle"
-          class="text-3xl font-bold mb-4"
-          >{{ sliderTitle }}</h2
-        >
+        <div class="flex justify-between items-center">
+          <h2
+            v-if="sliderTitle"
+            class="text-3xl font-bold mb-4"
+            >{{ sliderTitle }}</h2
+          >
+          <ClientOnly>
+            <div class="flex justify-center gap-2">
+              <UiCarouselPrevious
+                class="relative translate-x-0 translate-y-0 top-0 left-0"
+              />
+              <UiCarouselNext
+                class="relative translate-x-0 translate-y-0 top-0 left-0"
+              />
+            </div>
+          </ClientOnly>
+        </div>
         <p
           v-if="sliderDescription"
           class="text-muted-foreground max-w-2xl"
@@ -59,42 +79,28 @@
         :transition="{ duration: 0.8, delay: 0.2 }"
         class="relative"
       >
-        <UiCarousel
-          :opts="{
-            loop: true,
-            align: 'start',
-            slidesToScroll: 1,
-          }"
-          @init-api="setApi"
-        >
-          <UiCarouselContent class="-ml-4">
-            <UiCarouselItem
-              v-for="(item, index) in items"
-              :key="String(item[itemKey])"
-              class="pl-4 basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4"
+        <UiCarouselContent class="-ml-4">
+          <UiCarouselItem
+            v-for="(item, index) in items"
+            :key="String(item[itemKey])"
+            class="pl-4 basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4"
+          >
+            <motion.div
+              :initial="{ opacity: 0, scale: 0.9 }"
+              :while-in-view="{ opacity: 1, scale: 1 }"
+              :transition="{
+                duration: 0.5,
+                delay: index * 0.1,
+              }"
+              :while-hover="{ scale: 1.02 }"
             >
-              <motion.div
-                :initial="{ opacity: 0, scale: 0.9 }"
-                :while-in-view="{ opacity: 1, scale: 1 }"
-                :transition="{
-                  duration: 0.5,
-                  delay: index * 0.1,
-                }"
-                :while-hover="{ scale: 1.02 }"
-              >
-                <slot
-                  :item="item"
-                  :index="index"
-                />
-              </motion.div>
-            </UiCarouselItem>
-          </UiCarouselContent>
-
-          <ClientOnly>
-            <UiCarouselNext />
-            <UiCarouselPrevious />
-          </ClientOnly>
-        </UiCarousel>
+              <slot
+                :item="item"
+                :index="index"
+              />
+            </motion.div>
+          </UiCarouselItem>
+        </UiCarouselContent>
       </motion.div>
 
       <!-- Кнопка -->
@@ -119,6 +125,6 @@
           </NuxtLink>
         </UiButton>
       </motion.div>
-    </div>
+    </UiCarousel>
   </section>
 </template>

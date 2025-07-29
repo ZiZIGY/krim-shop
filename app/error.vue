@@ -21,7 +21,7 @@
 <template>
   <NuxtLayout>
     <section
-      class="min-h-screen bg-gradient-to-br from-background to-muted/20 flex items-center justify-center p-4"
+      class="bg-gradient-to-br from-background to-muted/20 flex items-center justify-center p-4"
     >
       <div class="container mx-auto max-w-2xl text-center">
         <motion.div

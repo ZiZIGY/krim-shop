@@ -36,6 +36,8 @@ export default defineNuxtConfig({
       siteName: process.env.SITE_NAME,
       phoneNumber: process.env.PHONE_NUMBER,
       deliveryTime: process.env.DELIVERY_TIME,
+      workTime: process.env.WORK_TIME,
+      address: process.env.ADDRESS,
       email: process.env.EMAIL,
     },
   },

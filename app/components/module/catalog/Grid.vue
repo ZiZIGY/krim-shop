@@ -144,26 +144,19 @@
 <template>
   <div class="space-y-6">
     <!-- Заголовок и сортировка -->
-    <div class="flex items-center justify-between">
-      <div class="flex items-center gap-4">
-        <h2 class="text-xl font-semibold">
-          Найдено товаров: {{ products.length }}
-        </h2>
-      </div>
 
-      <div class="flex items-center gap-2">
-        <span class="text-sm text-muted-foreground">Сортировка:</span>
-        <select
-          v-model="sortBy"
-          class="bg-background border border-border rounded-md px-3 py-1 text-sm"
-        >
-          <option value="default">По умолчанию</option>
-          <option value="price-asc">Цена: по возрастанию</option>
-          <option value="price-desc">Цена: по убыванию</option>
-          <option value="rating">По рейтингу</option>
-          <option value="name">По названию</option>
-        </select>
-      </div>
+    <div class="flex items-center gap-2">
+      <span class="text-sm text-muted-foreground">Сортировка:</span>
+      <select
+        v-model="sortBy"
+        class="bg-background border border-border rounded-md px-3 py-1 text-sm"
+      >
+        <option value="default">По умолчанию</option>
+        <option value="price-asc">Цена: по возрастанию</option>
+        <option value="price-desc">Цена: по убыванию</option>
+        <option value="rating">По рейтингу</option>
+        <option value="name">По названию</option>
+      </select>
     </div>
 
     <!-- Сетка товаров -->

@@ -40,23 +40,6 @@
       </div>
     </NuxtLink>
 
-    <!-- Личный кабинет -->
-    <NuxtLink
-      :to="isAuthenticated ? '/profile' : '/auth'"
-      class="relative inline-flex items-center justify-center h-10 w-10 rounded-md hover:bg-accent/50 transition-colors"
-      :aria-label="isAuthenticated ? 'Личный кабинет' : 'Войти'"
-    >
-      <Icon
-        :name="
-          isAuthenticated ? 'mdi:account-circle-outline' : 'mdi:login-variant'
-        "
-        class="h-5 w-5"
-      />
-      <span class="sr-only">
-        {{ isAuthenticated ? 'Личный кабинет' : 'Войти' }}
-      </span>
-    </NuxtLink>
-
     <WidgetTheme />
   </nav>
 </template>

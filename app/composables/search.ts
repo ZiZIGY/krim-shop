@@ -1,5 +1,4 @@
-export const useSearch = (onSearch?: (query: string) => void) => {
-  const inputRef = shallowRef<HTMLInputElement>();
+export const useSearch = () => {
   const searchQuery = ref('');
   const showDropdown = ref(false);
   const selectedIndex = ref(-1);
@@ -33,11 +32,10 @@ export const useSearch = (onSearch?: (query: string) => void) => {
   const performSearch = (query: string) => {
     if (query.trim()) {
       addToHistory(query.trim());
-      onSearch?.(query.trim());
     }
+
     showDropdown.value = false;
     selectedIndex.value = -1;
-    inputRef.value?.blur();
   };
 
   const handleKeydown = (event: KeyboardEvent) => {
@@ -49,14 +47,9 @@ export const useSearch = (onSearch?: (query: string) => void) => {
     } else if (event.key === 'ArrowUp') {
       event.preventDefault();
       selectedIndex.value = Math.max(selectedIndex.value - 1, -1);
-    } else if (event.key === 'Enter') {
-      event.preventDefault();
-      const selected = items[selectedIndex.value] || searchQuery.value;
-      if (selected) performSearch(selected);
     } else if (event.key === 'Escape') {
       showDropdown.value = false;
       selectedIndex.value = -1;
-      inputRef.value?.blur();
     }
   };
 
@@ -75,13 +68,20 @@ export const useSearch = (onSearch?: (query: string) => void) => {
     searchHistory.value.splice(searchHistory.value.indexOf(item), 1);
   };
 
+  const handleSubmit = () => {
+    console.log('handleSubmit', searchQuery.value);
+    if (searchQuery.value.trim()) {
+      performSearch(searchQuery.value.trim());
+      navigateTo(`/search?q=${searchQuery.value.trim()}`);
+    }
+  };
+
   watch(searchQuery, () => {
     selectedIndex.value = -1;
     showDropdown.value = !!searchQuery.value || searchHistory.value.length > 0;
   });
 
   return {
-    inputRef,
     searchQuery,
     showDropdown,
     selectedIndex,
@@ -91,5 +91,6 @@ export const useSearch = (onSearch?: (query: string) => void) => {
     clearSearch,
     clearHistory,
     removeFromHistory,
+    handleSubmit,
   };
 };

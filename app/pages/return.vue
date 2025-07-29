@@ -16,6 +16,25 @@
 
 <template>
   <div class="min-h-screen bg-background">
+    <!-- Хлебные крошки -->
+    <div class="container mx-auto px-4 py-8">
+      <UiBreadcrumb class="mb-8">
+        <UiBreadcrumbList>
+          <UiBreadcrumbItem>
+            <UiBreadcrumbLink as-child>
+              <NuxtLink to="/">Главная</NuxtLink>
+            </UiBreadcrumbLink>
+          </UiBreadcrumbItem>
+
+          <UiBreadcrumbSeparator />
+
+          <UiBreadcrumbItem>
+            <span class="text-foreground font-medium">Возврат и обмен</span>
+          </UiBreadcrumbItem>
+        </UiBreadcrumbList>
+      </UiBreadcrumb>
+    </div>
+
     <!-- Заголовок страницы -->
     <section class="py-16 bg-muted/30">
       <div class="container mx-auto px-4">

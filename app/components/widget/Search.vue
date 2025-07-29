@@ -1,50 +1,61 @@
 <script setup lang="ts">
   const {
-    inputRef,
     searchQuery,
     showDropdown,
     selectedIndex,
     filteredHistory,
-    performSearch,
     handleKeydown,
     clearSearch,
     clearHistory,
     removeFromHistory,
-  } = useSearch((query) => {
-    navigateTo(`/search?q=${query}`);
-  });
+    handleSubmit,
+  } = useSearch();
 </script>
 
 <template>
-  <div class="relative w-full">
-    <div class="relative">
-      <Icon
-        name="mdi:magnify"
-        class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
-      />
+  <form
+    class="relative w-full"
+    @submit.prevent="handleSubmit"
+  >
+    <div class="flex gap-2">
+      <div class="relative flex-1">
+        <Icon
+          name="mdi:magnify"
+          class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground"
+        />
 
-      <UiInput
-        ref="inputRef"
-        v-model="searchQuery"
-        placeholder="Поиск мебели..."
-        class="w-full pl-10 pr-10"
-        @focus="showDropdown = true"
-        @blur="showDropdown = false"
-        @keydown="handleKeydown"
-      />
+        <UiInput
+          v-model="searchQuery"
+          placeholder="Поиск мебели..."
+          class="w-full pl-10 pr-10 h-full"
+          @focus="showDropdown = true"
+          @blur="showDropdown = false"
+          @keydown="handleKeydown"
+        />
+
+        <UiButton
+          v-if="searchQuery"
+          variant="ghost"
+          size="icon"
+          type="button"
+          class="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7"
+          @mousedown.prevent
+          @click="clearSearch"
+        >
+          <Icon
+            name="mdi:close"
+            class="h-4 w-4"
+          />
+        </UiButton>
+      </div>
 
       <UiButton
-        v-if="searchQuery"
-        variant="ghost"
-        size="icon"
-        class="absolute right-1 top-1/2 -translate-y-1/2 h-7 w-7"
-        @mousedown.prevent
-        @click="clearSearch"
+        type="submit"
+        size="sm"
+        class="h-10 px-4"
+        :disabled="!searchQuery.trim()"
       >
-        <Icon
-          name="mdi:close"
-          class="h-4 w-4"
-        />
+        Найти
       </UiButton>
     </div>
 
@@ -59,7 +70,10 @@
             class="flex cursor-pointer items-center gap-2 rounded-sm px-2 py-1.5 text-sm hover:bg-accent"
             :class="{ 'bg-accent': selectedIndex === 0 }"
             @mousedown.prevent
-            @click="performSearch(searchQuery)"
+            @click="
+              searchQuery = searchQuery;
+              showDropdown = false;
+            "
           >
             <Icon
               name="mdi:magnify"
@@ -78,7 +92,10 @@
               'bg-accent': selectedIndex === (searchQuery ? index + 1 : index),
             }"
             @mousedown.prevent
-            @click="performSearch(item)"
+            @click="
+              searchQuery = item;
+              showDropdown = false;
+            "
           >
             <div class="flex items-center gap-2">
               <Icon
@@ -91,6 +108,7 @@
             <UiButton
               variant="ghost"
               size="icon"
+              type="button"
               class="h-6 w-6 opacity-0 group-hover:opacity-100"
               @click.stop="removeFromHistory(item)"
             >
@@ -105,6 +123,7 @@
             v-if="filteredHistory.length > 0 && !searchQuery"
             variant="ghost"
             size="sm"
+            type="button"
             class="w-full justify-start gap-2 text-muted-foreground"
             @mousedown.prevent
             @click="clearHistory"
@@ -118,7 +137,7 @@
         </div>
       </div>
     </ClientOnly>
-  </div>
+  </form>
 </template>
 
 <style scoped>
