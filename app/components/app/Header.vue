@@ -37,7 +37,7 @@
 
           <WidgetLogo />
 
-          <ModuleCatalogMenu class="hidden lg:block" />
+          <ModuleCatalogMenu />
         </div>
 
         <!-- Центр: Поиск -->

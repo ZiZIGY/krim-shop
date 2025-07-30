@@ -18,7 +18,7 @@
       name: 'Диван "Комфорт"',
       price: 45000,
       quantity: 1,
-      image: '/images/sofa-1.jpg',
+      image: '/shkaf.png',
       category: 'Мягкая мебель',
     },
     {
@@ -26,7 +26,7 @@
       name: 'Стол обеденный "Классик"',
       price: 18000,
       quantity: 1,
-      image: '/images/table-1.jpg',
+      image: '/shkaf.png',
       category: 'Столы и стулья',
     },
     {
@@ -34,7 +34,7 @@
       name: 'Кресло "Уют"',
       price: 22000,
       quantity: 2,
-      image: '/images/chair-1.jpg',
+      image: '/shkaf.png',
       category: 'Мягкая мебель',
     },
     {
@@ -42,7 +42,7 @@
       name: 'Шкаф-купе "Модерн"',
       price: 35000,
       quantity: 1,
-      image: '/images/wardrobe-1.jpg',
+      image: '/shkaf.png',
       category: 'Корпусная мебель',
     },
     {
@@ -50,7 +50,7 @@
       name: 'Кровать "Соня"',
       price: 28000,
       quantity: 1,
-      image: '/images/bed-1.jpg',
+      image: '/shkaf.png',
       category: 'Спальная мебель',
     },
   ]);

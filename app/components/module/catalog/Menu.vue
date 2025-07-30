@@ -1,6 +1,9 @@
 <template>
   <UiDropdownMenu>
-    <UiDropdownMenuTrigger as-child>
+    <UiDropdownMenuTrigger
+      as-child
+      class="hidden lg:block"
+    >
       <UiButton
         variant="ghost"
         class="gap-2 hover:bg-accent/50 transition-colors group"

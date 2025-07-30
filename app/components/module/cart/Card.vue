@@ -4,12 +4,11 @@
       <div class="flex gap-4">
         <!-- Изображение товара (левая секция) -->
         <div class="flex-shrink-0">
-          <div
-            class="w-24 h-24 bg-primary/10 rounded-lg flex items-center justify-center"
-          >
-            <Icon
-              name="mdi:wardrobe"
-              class="h-12 w-12 text-primary"
+          <div class="w-24 h-24 bg-primary/10 rounded-lg overflow-hidden">
+            <NuxtImg
+              :src="item.image"
+              :alt="item.name"
+              class="w-full h-full object-cover"
             />
           </div>
         </div>
