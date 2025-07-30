@@ -92,9 +92,7 @@
         Math.random() > 0.7 ? Math.floor(Math.random() * 30) + 10 : undefined,
       rating: Math.floor(Math.random() * 5) + 1,
       reviewsCount: Math.floor(Math.random() * 200) + 5,
-      image: `https://picsum.photos/400/400?random=${
-        currentPage.value * 10 + i + 1
-      }`,
+      image: `/shkaf.png`,
       inStock: Math.random() > 0.1,
       material:
         materials[Math.floor(Math.random() * materials.length)] ||

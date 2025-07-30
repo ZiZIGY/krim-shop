@@ -3,13 +3,13 @@
 
   const slides = [
     {
-      image: 'https://picsum.photos/200/300',
+      image: '/hero-1.jpg',
     },
     {
-      image: 'https://picsum.photos/200/300',
+      image: '/hero-2.jpg',
     },
     {
-      image: 'https://picsum.photos/200/300',
+      image: '/hero-1.jpg',
     },
   ];
 

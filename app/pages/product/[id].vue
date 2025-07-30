@@ -254,12 +254,7 @@
     warranty: '2 года',
     sku: 'DI-2024-001',
     weight: '45 кг',
-    images: [
-      'https://picsum.photos/600/600?random=1',
-      'https://picsum.photos/600/600?random=2',
-      'https://picsum.photos/600/600?random=3',
-      'https://picsum.photos/600/600?random=4',
-    ],
+    images: ['/shkaf.png', '/shkaf.png', '/shkaf.png', '/shkaf.png'],
   });
 
   const api = ref<CarouselApi>();

@@ -28,7 +28,7 @@
       discount: 18,
       rating: 4,
       reviewsCount: 127,
-      image: 'https://picsum.photos/400/400?random=1',
+      image: '/shkaf.png',
       inStock: true,
       material: 'Велюр, дерево',
       dimensions: '200×90×85 см',
