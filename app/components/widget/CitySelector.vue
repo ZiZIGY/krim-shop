@@ -1,24 +1,32 @@
 <script setup lang="ts">
   interface City {
-    id: string;
+    id: number;
     name: string;
-    deliveryCost: number;
+    slug: string;
+    base_cost: string;
+    free_threshold: string;
+    delivery_days_min: number;
+    delivery_days_max: number;
+    is_active: boolean;
+    order: number;
+    base_cost_effective: number;
+    discount_amount: number;
+    final_cost: number;
+    applied_discount: null;
   }
 
-  const cities = ref<City[]>([
-    { id: '1', name: 'Москва', deliveryCost: 0 },
-    { id: '2', name: 'Санкт-Петербург', deliveryCost: 300 },
-    { id: '3', name: 'Новосибирск', deliveryCost: 500 },
-    { id: '4', name: 'Екатеринбург', deliveryCost: 400 },
-    { id: '5', name: 'Казань', deliveryCost: 350 },
-    { id: '6', name: 'Нижний Новгород', deliveryCost: 300 },
-  ]);
+  const config = useRuntimeConfig();
 
-  const selectedCity = useLocalStorage<City>('selectedCity', cities.value[0]!);
+  const { data: cities } = useFetch<City[]>(`/api/shipping/regions/`, {
+    baseURL: config.public.apiUrl,
+  });
 
-  const handleCitySelect = (city: City) => {
-    selectedCity.value = city;
-  };
+  const selectedCity = useLocalStorage<number>(
+    'selectedCity',
+    cities.value?.[0]?.id ?? 0
+  );
+
+  const handleCitySelect = (city: City) => (selectedCity.value = city.id);
 </script>
 
 <template>
@@ -32,7 +40,12 @@
           name="mdi:map-marker"
           class="h-4 w-4 text-primary"
         />
-        <span>{{ selectedCity.name }}</span>
+        <span>
+          {{
+            cities?.find((city) => city.id === selectedCity)?.name ||
+            'Выберите город'
+          }}
+        </span>
         <Icon
           name="mdi:chevron-down"
           class="h-4 w-4"
@@ -41,22 +54,20 @@
     </UiDropdownMenuTrigger>
 
     <UiDropdownMenuContent class="w-48">
-      <UiDropdownMenuLabel>Выберите город</UiDropdownMenuLabel>
-      <UiDropdownMenuSeparator />
       <UiDropdownMenuItem
         v-for="city in cities"
         :key="city.id"
+        :class="{ 'bg-accent': selectedCity === city.id }"
         @click="handleCitySelect(city)"
-        :class="{ 'bg-accent': selectedCity.id === city.id }"
       >
         <div class="flex w-full items-center justify-between">
           <span>{{ city.name }}</span>
-          <span
-            v-if="city.deliveryCost > 0"
+          <!-- <span
+            v-if="city.base_cost_effective > 0"
             class="text-xs text-muted-foreground"
           >
-            +{{ city.deliveryCost }}₽
-          </span>
+            +{{ city.base_cost_effective }}₽
+          </span> -->
         </div>
       </UiDropdownMenuItem>
     </UiDropdownMenuContent>

@@ -1,45 +1,28 @@
 <script setup lang="ts">
-  interface Product {
-    id: string;
-    name: string;
-    brand: string;
-    price: number;
-    originalPrice?: number;
-    discount?: number;
-    rating: number;
-    reviewsCount: number;
-    image: string;
-    inStock: boolean;
-    material?: string;
-    dimensions?: string;
-  }
-
   interface Props {
     product?: Product;
   }
 
   const props = withDefaults(defineProps<Props>(), {
     product: () => ({
-      id: '1',
-      name: 'Современный диван "Комфорт" с мягкой обивкой',
-      brand: 'IKEA',
-      price: 45000,
-      originalPrice: 55000,
-      discount: 18,
-      rating: 4,
-      reviewsCount: 127,
-      image: '/shkaf.png',
-      inStock: true,
-      material: 'Велюр, дерево',
-      dimensions: '200×90×85 см',
+      id: 1,
+      title: 'Современный диван "Комфорт" с мягкой обивкой',
+      slug: 'modern-sofa-comfort',
+      price: '45000',
+      discount_price: '55000',
+      discount_percent: 18,
+      sku: 'SOFA-001',
     }),
   });
 
   const currentPrice = computed(() => {
-    if (props.product.discount && props.product.originalPrice) {
-      return props.product.originalPrice * (1 - props.product.discount / 100);
+    if (props.product.discount_percent && props.product.discount_price) {
+      return (
+        parseFloat(props.product.discount_price) *
+        (1 - props.product.discount_percent / 100)
+      );
     }
-    return props.product.price;
+    return parseFloat(props.product.price);
   });
 
   // Methods
@@ -118,11 +101,11 @@
         </span>
         <span
           v-if="
-            product.originalPrice && product.originalPrice !== product.price
+            product.discount_price && product.discount_price !== product.price
           "
           class="text-xs text-muted-foreground line-through"
         >
-          {{ formatPrice(product.originalPrice) }} ₽
+          {{ formatPrice(parseFloat(product.discount_price)) }} ₽
         </span>
       </div>
 

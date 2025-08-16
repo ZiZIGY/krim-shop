@@ -39,6 +39,7 @@ export default defineNuxtConfig({
       workTime: process.env.WORK_TIME,
       address: process.env.ADDRESS,
       email: process.env.EMAIL,
+      apiUrl: process.env.API_URL,
     },
   },
 

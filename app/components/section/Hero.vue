@@ -1,17 +1,28 @@
 <script lang="ts" setup>
   import type { CarouselApi } from '../ui/carousel';
 
-  const slides = [
-    {
-      image: '/hero-1.jpg',
-    },
-    {
-      image: '/hero-2.jpg',
-    },
-    {
-      image: '/hero-1.jpg',
-    },
-  ];
+  interface Slide {
+    id: number;
+    title: string;
+    link: string;
+    order: number;
+    is_active: boolean;
+    image: string;
+    image_url: string;
+  }
+
+  interface Response {
+    count: number;
+    next: string | null;
+    previous: string | null;
+    results: Slide[];
+  }
+
+  const config = useRuntimeConfig();
+
+  const { data: slides } = useFetch<Response>(`/api/slider/`, {
+    baseURL: config.public.apiUrl,
+  });
 
   const api = ref<CarouselApi>();
 
@@ -31,13 +42,15 @@
     >
       <UiCarouselContent>
         <UiCarouselItem
-          v-for="slide in slides"
-          :key="slide.image"
+          v-for="slide in slides?.results"
+          :key="slide.id"
           class="h-96"
         >
           <NuxtImg
             :src="slide.image"
+            :alt="slide.title"
             class="w-full h-full object-cover"
+            loading="lazy"
           />
         </UiCarouselItem>
       </UiCarouselContent>
