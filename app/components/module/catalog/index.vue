@@ -23,88 +23,116 @@
 
   interface Props {
     category?: string;
-    initialFilters?: FilterValues;
     title?: string;
     description?: string;
+    cardsCount?: number;
+    cards?: Product[];
+    filters?: CatalogFilters;
   }
 
-  const props = withDefaults(defineProps<Props>(), {
-    category: '',
-    initialFilters: () => ({}),
-    title: 'Каталог мебели',
-    description: 'Широкий выбор качественной мебели для дома и офиса',
-  });
+  const props = defineProps<Props>();
 
-  // State
-  const showMobileFilters = ref(false);
-  const loading = ref(false);
-  const hasMore = ref(true);
-  const activeFilters = ref<FilterValues>({ ...props.initialFilters });
-  const sortBy = ref('default');
+  const showMobileFilters = shallowRef(false);
+  const activeFilters = ref<FilterValues>({});
+
+  // Секции фильтров, открытые по умолчанию
+  const defaultOpenSections = ref<string[]>(['price']);
 
   // Конфигурация фильтров
-  const filterConfig: FilterConfig[] = [
-    {
-      key: 'categories',
-      title: 'Категории',
-      type: 'checkbox',
-      options: [
-        { value: 'sofas', label: 'Диваны', count: 45 },
-        { value: 'chairs', label: 'Стулья', count: 23 },
-        { value: 'tables', label: 'Столы', count: 31 },
-        { value: 'beds', label: 'Кровати', count: 12 },
-        { value: 'wardrobes', label: 'Шкафы', count: 18 },
-        { value: 'storage', label: 'Системы хранения', count: 25 },
-      ],
-    },
-    {
-      key: 'price',
-      title: 'Цена',
-      type: 'range',
-      min: 0,
-      max: 200000,
-      step: 1000,
-      placeholders: ['От', 'До'],
-    },
-    {
-      key: 'brands',
-      title: 'Бренды',
-      type: 'checkbox',
-      options: [
-        { value: 'ikea', label: 'IKEA' },
-        { value: 'ashley', label: 'Ashley' },
-        { value: 'wayfair', label: 'Wayfair' },
-        { value: 'west-elm', label: 'West Elm' },
-        { value: 'cb2', label: 'CB2' },
-      ],
-    },
-    {
-      key: 'rating',
-      title: 'Рейтинг',
-      type: 'radio',
-      options: [
-        { value: 4, label: '4 звезды и выше' },
-        { value: 3, label: '3 звезды и выше' },
-        { value: 2, label: '2 звезды и выше' },
-        { value: 1, label: '1 звезда и выше' },
-      ],
-    },
-    {
+  const filterConfig = computed<FilterConfig[]>(() => {
+    if (!props.filters) {
+      return [];
+    }
+
+    const config: FilterConfig[] = [];
+
+    // Добавляем диапазоны (например, цена)
+    if (props.filters.ranges) {
+      Object.entries(props.filters.ranges).forEach(([key, range]) => {
+        config.push({
+          key,
+          title:
+            key === 'price'
+              ? 'Цена'
+              : key === 'width'
+              ? 'Ширина'
+              : key === 'height'
+              ? 'Высота'
+              : key === 'depth'
+              ? 'Глубина'
+              : key.charAt(0).toUpperCase() + key.slice(1),
+          type: 'range',
+          min: range.min,
+          max: range.max,
+          step:
+            key === 'price'
+              ? 100
+              : key === 'width' || key === 'height' || key === 'depth'
+              ? 5
+              : 1,
+          placeholders: ['От', 'До'],
+        });
+      });
+    }
+
+    // Добавляем цвета
+    if (props.filters.colors && props.filters.colors.length > 0) {
+      config.push({
+        key: 'colors',
+        title: 'Цвета',
+        type: 'checkbox',
+        options: props.filters.colors.map((color) => ({
+          value: color.id,
+          label: color.name,
+          count: color.count,
+          color: color.hex_code,
+        })),
+      });
+    }
+
+    // Добавляем теги
+    if (props.filters.tags && props.filters.tags.length > 0) {
+      config.push({
+        key: 'tags',
+        title: 'Теги',
+        type: 'checkbox',
+        options: props.filters.tags.map((tag) => ({
+          value: tag.id,
+          label: tag.name,
+          count: tag.count,
+        })),
+      });
+    }
+
+    // Добавляем атрибуты
+    if (props.filters.attributes && props.filters.attributes.length > 0) {
+      props.filters.attributes.forEach((attr) => {
+        config.push({
+          key: attr.slug,
+          title: attr.name,
+          type: attr.is_multiselect ? 'checkbox' : 'radio',
+          options: attr.options.map((opt) => ({
+            value: opt.id,
+            label: opt.value,
+            count: opt.count,
+          })),
+        });
+      });
+    }
+
+    // Добавляем фильтр наличия
+    config.push({
       key: 'inStock',
       title: 'Наличие',
       type: 'switch',
       label: 'Только в наличии',
-    },
-  ];
+    });
 
-  // Computed
+    return config;
+  });
+
   const currentCategory = computed(() => {
-    if (!props.category) return null;
-    const categoryConfig = filterConfig.find((f) => f.key === 'categories');
-    const option = categoryConfig?.options?.find(
-      (opt) => opt.value === props.category
-    );
-    return option?.label || props.category;
+    return props.category || null;
   });
 
   const pageTitle = computed(() => {
@@ -128,59 +156,64 @@
     }).length;
   });
 
-  const filteredProducts = computed(() => {
-    // Здесь была бы логика фильтрации товаров
-    // Пока возвращаем пустой массив, чтобы Grid сам сгенерировал данные
-    return [];
-  });
+  // Состояния для навигации
+  const router = useRouter();
+  const route = useRoute();
 
   // Methods
-  const handleFiltersChanged = (filters: FilterValues) => {
+  const handleFiltersChanged = async (filters: FilterValues) => {
     activeFilters.value = { ...filters };
-    // Здесь была бы логика применения фильтров и загрузки данных
-    console.log('Filters changed:', filters);
+
+    // Формируем параметры запроса из фильтров
+    const queryParams: Record<string, string | number> = {};
+
+    // Копируем текущие параметры запроса
+    Object.entries(route.query).forEach(([key, value]) => {
+      if (typeof value === 'string') {
+        queryParams[key] = value;
+      }
+    });
+
+    // Добавляем категорию, если она есть
+    if (props.category) {
+      queryParams.category = props.category;
+    }
+
+    // Обрабатываем различные типы фильтров
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value === undefined || value === null || value === false) {
+        // Пропускаем пустые значения
+        return;
+      }
+
+      if (Array.isArray(value)) {
+        if (value.length === 0) {
+          // Пустой массив - пропускаем
+        } else if (
+          key === 'price' ||
+          value.every((v) => typeof v === 'number')
+        ) {
+          // Диапазон цен
+          queryParams[`${key}_min`] = value[0];
+          queryParams[`${key}_max`] = value[1];
+        } else {
+          // Массив значений (чекбоксы)
+          queryParams[key] = value.join(',');
+        }
+      } else if (typeof value === 'boolean' && value) {
+        queryParams[key] = 'true';
+      } else if (value) {
+        queryParams[key] = String(value);
+      }
+    });
+
+    // Обновляем URL с новыми параметрами
+    await router.push({ query: queryParams });
   };
 
-  const handleMobileFiltersChanged = (filters: FilterValues) => {
-    activeFilters.value = { ...filters };
+  const handleMobileFiltersChanged = async (filters: FilterValues) => {
+    await handleFiltersChanged(filters);
     showMobileFilters.value = false;
-  };
-
-  const handleResetFilters = () => {
-    activeFilters.value = {};
-  };
-
-  const handleSortChange = (newSortBy: string) => {
-    sortBy.value = newSortBy;
-    // Логика сортировки
-  };
-
-  const handleLoadMore = () => {
-    loading.value = true;
-    // Имитация загрузки
-    setTimeout(() => {
-      loading.value = false;
-    }, 1000);
-  };
-
-  const handleFavoriteToggle = (productId: string) => {
-    console.log('Toggle favorite:', productId);
-    // Логика добавления/удаления из избранного
-  };
-
-  const handleQuickView = (productId: string) => {
-    console.log('Quick view:', productId);
-    // Логика быстрого просмотра товара
-  };
-
-  const handleAddToCart = (productId: string) => {
-    console.log('Add to cart:', productId);
-    // Логика добавления в корзину
-  };
-
-  const handleAddToCompare = (productId: string) => {
-    console.log('Add to compare:', productId);
-    // Логика добавления к сравнению
   };
 
   // SEO
@@ -203,13 +236,14 @@
           <ModuleCatalogFilter
             :config="filterConfig"
             :initial-filters="activeFilters"
+            :default-open-sections="defaultOpenSections"
             @filters-changed="handleFiltersChanged"
           />
         </div>
       </aside>
 
       <!-- Основной контент -->
-      <main class="flex-1 min-w-0">
+      <section class="flex-1 min-w-0">
         <!-- Мобильные фильтры -->
         <div class="lg:hidden mb-6">
           <UiButton
@@ -273,18 +307,10 @@
 
         <!-- Сетка товаров -->
         <ModuleCatalogGrid
-          :initial-products="filteredProducts"
-          :loading="loading"
-          :has-more="hasMore"
-          @favorite-toggle="handleFavoriteToggle"
-          @quick-view="handleQuickView"
-          @add-to-cart="handleAddToCart"
-          @add-to-compare="handleAddToCompare"
-          @load-more="handleLoadMore"
-          @reset-filters="handleResetFilters"
-          @sort-change="handleSortChange"
+          :initial-products="props.cards"
+          :cards-count="props.cardsCount"
         />
-      </main>
+      </section>
     </div>
 
     <!-- Мобильный фильтр в drawer -->
@@ -294,6 +320,7 @@
           <ModuleCatalogFilter
             :config="filterConfig"
             :initial-filters="activeFilters"
+            :default-open-sections="defaultOpenSections"
             @filters-changed="handleMobileFiltersChanged"
           />
         </div>

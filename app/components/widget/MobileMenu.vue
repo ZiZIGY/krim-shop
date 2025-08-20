@@ -81,7 +81,7 @@
 </template>
 
 <script setup lang="ts">
-  const showMobileMenu = ref(false);
+  const showMobileMenu = shallowRef(false);
   const { menuSections } = useMenu();
 </script>
 

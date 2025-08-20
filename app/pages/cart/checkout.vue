@@ -281,7 +281,7 @@
 
 <script setup lang="ts">
   // Тестовые данные корзины
-  const cartItems = ref([
+  const cartItems = shallowRef([
     {
       id: '1',
       name: 'Диван "Комфорт"',

@@ -1,11 +1,11 @@
 <script setup lang="ts">
   interface Props {
-    productId: string;
+    productId: number;
   }
 
   const props = defineProps<Props>();
 
-  const favorites = useLocalStorage<string[]>('favorites', []);
+  const favorites = useLocalStorage<number[]>('favorites', []);
 
   const isFavorite = computed(() => {
     return favorites.value.includes(props.productId);

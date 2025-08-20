@@ -24,7 +24,7 @@
     baseURL: config.public.apiUrl,
   });
 
-  const api = ref<CarouselApi>();
+  const api = shallowRef<CarouselApi>();
 
   const setApi = (carouselApi: CarouselApi) => {
     if (!carouselApi) return;

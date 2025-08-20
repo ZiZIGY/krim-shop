@@ -40,12 +40,18 @@
           name="mdi:map-marker"
           class="h-4 w-4 text-primary"
         />
-        <span>
-          {{
-            cities?.find((city) => city.id === selectedCity)?.name ||
-            'Выберите город'
-          }}
-        </span>
+        <ClientOnly>
+          <template #fallback>
+            <UiSkeleton class="h-4 w-24" />
+          </template>
+
+          <span>
+            {{
+              cities?.find((city) => city.id === selectedCity)?.name ||
+              'Выберите город'
+            }}
+          </span>
+        </ClientOnly>
         <Icon
           name="mdi:chevron-down"
           class="h-4 w-4"

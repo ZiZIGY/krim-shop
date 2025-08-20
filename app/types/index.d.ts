@@ -3,9 +3,21 @@ declare interface Product {
   title: string;
   slug: string;
   price: string;
-  discount_price: null | string;
+  discount_price: string;
   discount_percent: number;
   sku: string;
+  image: string;
+  is_active: boolean;
+  stock: number;
+  width: string;
+  height: string;
+  depth: string;
+  color: number;
+  color_name: string;
+  color_hex: string;
+  category: number;
+  category_slug: string;
+  created_at: string;
 }
 
 declare interface FilterOption {

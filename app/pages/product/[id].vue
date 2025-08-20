@@ -237,7 +237,7 @@
   const productId = route.params.id as string;
 
   // Тестовые данные товара
-  const product = ref({
+  const product = shallowRef({
     id: productId,
     name: 'Современный диван "Комфорт" с мягкой обивкой и подлокотниками',
     brand: 'IKEA',
@@ -257,7 +257,7 @@
     images: ['/shkaf.png', '/shkaf.png', '/shkaf.png', '/shkaf.png'],
   });
 
-  const api = ref<CarouselApi>();
+  const api = shallowRef<CarouselApi>();
 
   const setApi = (carouselApi: CarouselApi) => {
     if (!carouselApi) return;

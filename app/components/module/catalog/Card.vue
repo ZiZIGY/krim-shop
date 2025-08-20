@@ -1,19 +1,9 @@
 <script setup lang="ts">
   interface Props {
-    product?: Product;
+    product: Product;
   }
 
-  const props = withDefaults(defineProps<Props>(), {
-    product: () => ({
-      id: 1,
-      title: 'Современный диван "Комфорт" с мягкой обивкой',
-      slug: 'modern-sofa-comfort',
-      price: '45000',
-      discount_price: '55000',
-      discount_percent: 18,
-      sku: 'SOFA-001',
-    }),
-  });
+  const props = defineProps<Props>();
 
   const currentPrice = computed(() => {
     if (props.product.discount_percent && props.product.discount_price) {
@@ -39,7 +29,7 @@
     <div class="relative overflow-hidden">
       <NuxtImg
         :src="product.image"
-        :alt="product.name"
+        :alt="product.title"
         class="h-48 w-full object-cover transition-transform duration-300 group-hover:scale-105"
       />
 
@@ -65,7 +55,7 @@
 
       <!-- Статус наличия -->
       <div
-        v-if="!product.inStock"
+        v-if="!product.stock"
         class="absolute inset-0 bg-background/80 flex items-center justify-center"
       >
         <span class="text-muted-foreground font-medium text-sm"
@@ -81,16 +71,17 @@
           :to="`/product/${product.id}`"
           class="text-sm font-medium line-clamp-2 group-hover:text-primary transition-colors mb-1"
         >
-          {{ product.name }}
+          {{ product.title }}
         </NuxtLink>
         <p class="text-xs text-muted-foreground mb-2">
-          {{ product.brand }}
+          {{ product.sku }}
         </p>
 
         <!-- Характеристики -->
         <div class="space-y-0.5 text-xs text-muted-foreground mb-3">
-          <div v-if="product.material"> {{ product.material }} </div>
-          <div v-if="product.dimensions"> {{ product.dimensions }} </div>
+          <div v-if="product.width"> {{ product.width }} </div>
+          <div v-if="product.height"> {{ product.height }} </div>
+          <div v-if="product.depth"> {{ product.depth }} </div>
         </div>
       </div>
 
@@ -114,7 +105,7 @@
         <UiButton
           size="sm"
           class="flex-1 text-xs"
-          :disabled="!product.inStock"
+          :disabled="!product.stock"
         >
           <Icon
             name="mdi:cart-plus"

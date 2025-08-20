@@ -1,7 +1,7 @@
 export const useSearch = () => {
-  const searchQuery = ref('');
-  const showDropdown = ref(false);
-  const selectedIndex = ref(-1);
+  const searchQuery = shallowRef('');
+  const showDropdown = shallowRef(false);
+  const selectedIndex = shallowRef(-1);
 
   const searchHistory = useLocalStorage<string[]>('search-history', [], {
     serializer: {

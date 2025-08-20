@@ -1,141 +1,66 @@
 <script setup lang="ts">
-  interface Product {
-    id: string;
-    name: string;
-    brand: string;
-    price: number;
-    originalPrice?: number;
-    discount?: number;
-    rating: number;
-    reviewsCount: number;
-    image: string;
-    inStock: boolean;
-    material?: string;
-    dimensions?: string;
-  }
-
   interface Props {
     initialProducts?: Product[];
     loading?: boolean;
     currentPage?: number;
     totalPages?: number;
+    cardsCount?: number;
   }
 
   const props = withDefaults(defineProps<Props>(), {
     initialProducts: () => [],
     loading: false,
     currentPage: 1,
-    totalPages: 5, // Тестовые данные - 5 страниц
+    totalPages: 1,
+    cardsCount: 0
   });
-
-  const sortBy = ref('default');
-  const currentPage = ref(props.currentPage);
-
-  // Генерируем тестовые данные если не переданы
-  const generateProducts = (): Product[] => {
-    const names = [
-      'Современный диван "Комфорт"',
-      'Кресло-качалка "Релакс"',
-      'Обеденный стол "Классик"',
-      'Шкаф-купе "Модерн"',
-      'Кровать "Сонная"',
-      'Стул барный "Хай-тек"',
-      'Комод "Винтаж"',
-      'Тумба под ТВ "Медиа"',
-      'Журнальный столик "Гласс"',
-      'Кресло офисное "Босс"',
-      'Пуф мягкий "Комфи"',
-      'Стеллаж "Лофт"',
-      'Диван угловой "Уют"',
-      'Кресло кожаное "Премиум"',
-      'Стол письменный "Офис"',
-      'Шкаф книжный "Библиотека"',
-      'Кровать односпальная "Малыш"',
-      'Стул кухонный "Кухня"',
-      'Комод детский "Радуга"',
-      'Тумба прикроватная "Ночь"',
-      'Журнальный столик "Кофе"',
-      'Кресло компьютерное "Геймер"',
-      'Пуф круглый "Мягкий"',
-      'Стеллаж открытый "Полка"',
-    ];
-
-    const brands = [
-      'IKEA',
-      'Ashley',
-      'Wayfair',
-      'West Elm',
-      'CB2',
-      'Pottery Barn',
-      'Herman Miller',
-    ];
-    const materials = [
-      'Велюр, дерево',
-      'Кожа, металл',
-      'Ткань, пластик',
-      'Массив дуба',
-      'МДФ, шпон',
-      'Алюминий, сетка',
-      'Хрусталь, латунь',
-    ];
-
-    return Array.from({ length: 12 }, (_, i) => ({
-      id: `product-${currentPage.value}-${i + 1}`,
-      name: names[i] || `Товар ${i + 1}`,
-      brand: brands[Math.floor(Math.random() * brands.length)] || 'IKEA',
-      price: Math.floor(Math.random() * 80000) + 10000,
-      originalPrice:
-        Math.random() > 0.6
-          ? Math.floor(Math.random() * 100000) + 50000
-          : undefined,
-      discount:
-        Math.random() > 0.7 ? Math.floor(Math.random() * 30) + 10 : undefined,
-      rating: Math.floor(Math.random() * 5) + 1,
-      reviewsCount: Math.floor(Math.random() * 200) + 5,
-      image: `/shkaf.png`,
-      inStock: Math.random() > 0.1,
-      material:
-        materials[Math.floor(Math.random() * materials.length)] ||
-        'Велюр, дерево',
-      dimensions: `${180 + Math.floor(Math.random() * 100)}×${
-        80 + Math.floor(Math.random() * 50)
-      }×${70 + Math.floor(Math.random() * 30)} см`,
-    }));
-  };
-
-  const products = ref<Product[]>(
-    props.initialProducts.length > 0
-      ? props.initialProducts
-      : generateProducts()
-  );
-
-  // Computed
-  const sortedProducts = computed(() => {
-    const sorted = [...products.value];
-
-    switch (sortBy.value) {
+  
+  const router = useRouter();
+  const route = useRoute();
+  const currentPage = shallowRef(Number(route.query.page) || props.currentPage || 1);
+  
+  // Получаем отсортированный список товаров
+  const sortOrder = ref(route.query.sort as string || 'default');
+  
+  const sortProducts = computed(() => {
+    if (!props.initialProducts) return [];
+    
+    const products = [...props.initialProducts];
+    
+    switch (sortOrder.value) {
       case 'price-asc':
-        return sorted.sort((a, b) => a.price - b.price);
+        return products.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
       case 'price-desc':
-        return sorted.sort((a, b) => b.price - a.price);
-      case 'rating':
-        return sorted.sort((a, b) => b.rating - a.rating);
+        return products.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
       case 'name':
-        return sorted.sort((a, b) => a.name.localeCompare(b.name));
+        return products.sort((a, b) => a.title.localeCompare(b.title));
       default:
-        return sorted;
+        return products;
     }
   });
-
-  const emit = defineEmits<{
-    'page-change': [page: number];
-  }>();
-
+  
+  // Обработчики событий
   const handlePageChange = (page: number) => {
     currentPage.value = page;
-    // Обновляем товары для демонстрации
-    products.value = generateProducts();
-    emit('page-change', page);
+    
+    const query = { ...route.query, page: page.toString() };
+    if (page === 1) {
+      delete query.page;
+    }
+    
+    router.push({ query });
+  };
+  
+  const handleSortChange = (event: Event) => {
+    const target = event.target as HTMLSelectElement;
+    sortOrder.value = target.value;
+    
+    const query = { ...route.query, sort: target.value };
+    if (target.value === 'default') {
+      delete query.sort;
+    }
+    
+    router.push({ query });
   };
 </script>
 
@@ -146,13 +71,13 @@
     <div class="flex items-center gap-2">
       <span class="text-sm text-muted-foreground">Сортировка:</span>
       <select
-        v-model="sortBy"
         class="bg-background border border-border rounded-md px-3 py-1 text-sm"
+        :value="sortOrder"
+        @change="handleSortChange"
       >
         <option value="default">По умолчанию</option>
         <option value="price-asc">Цена: по возрастанию</option>
         <option value="price-desc">Цена: по убыванию</option>
-        <option value="rating">По рейтингу</option>
         <option value="name">По названию</option>
       </select>
     </div>
@@ -162,7 +87,7 @@
       class="grid gap-6 transition-all duration-300 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4"
     >
       <ModuleCatalogCard
-        v-for="product in sortedProducts"
+        v-for="product in sortProducts"
         :key="product.id"
         :product="product"
       />
@@ -175,8 +100,8 @@
     >
       <UiPagination
         v-slot="{ page }"
-        :items-per-page="12"
-        :total="props.totalPages * 12"
+        :items-per-page="24"
+        :total="props.cardsCount || 0"
         :default-page="currentPage"
         @update:page="handlePageChange"
       >
@@ -205,7 +130,7 @@
 
     <!-- Пустое состояние -->
     <div
-      v-if="products.length === 0 && !loading"
+      v-if="sortProducts.length === 0 && !props.loading"
       class="text-center py-12"
     >
       <Icon

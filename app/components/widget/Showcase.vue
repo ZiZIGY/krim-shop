@@ -20,7 +20,7 @@
     sliderButtonLink: '',
   });
 
-  const api = ref<CarouselApi>();
+  const api = shallowRef<CarouselApi>();
 
   const setApi = (carouselApi: CarouselApi) => {
     if (!carouselApi) return;

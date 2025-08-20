@@ -1,3 +1,132 @@
+<script setup lang="ts">
+  interface FilterOption {
+    value: string | number;
+    label: string;
+    count?: number;
+  }
+
+  interface FilterConfig {
+    key: string;
+    title: string;
+    type: 'checkbox' | 'range' | 'radio' | 'switch';
+    options?: FilterOption[];
+    min?: number;
+    max?: number;
+    step?: number;
+    placeholders?: string[];
+    label?: string;
+  }
+
+  interface FilterValues {
+    [key: string]:
+      | string[]
+      | [number, number]
+      | string
+      | number
+      | boolean
+      | undefined;
+  }
+
+  interface Props {
+    config: FilterConfig[];
+    initialFilters: FilterValues;
+    defaultOpenSections: string[];
+  }
+
+  const props = defineProps<Props>();
+
+  const emit = defineEmits<{
+    filtersChanged: [filters: FilterValues];
+  }>();
+
+  const filters = ref<FilterValues>({ ...props.initialFilters });
+
+  const rangeValues = computed(() => {
+    const result: Record<string, [number, number]> = {};
+
+    props.config.forEach((filter) => {
+      if (filter.type === 'range') {
+        const min = filter.min || 0;
+        const max = filter.max || 100000;
+
+        const currentValue = filters.value[filter.key];
+        if (Array.isArray(currentValue) && currentValue.length >= 2) {
+          result[filter.key] = [
+            Number(currentValue[0]),
+            Number(currentValue[1]),
+          ];
+        } else {
+          result[filter.key] = [min, max];
+        }
+      }
+    });
+
+    return result;
+  });
+
+  // Обновляем фильтры при изменении входных параметров
+  watch(
+    () => props.initialFilters,
+    (newFilters) => {
+      filters.value = { ...newFilters };
+    },
+    { deep: true }
+  );
+
+  const hasActiveFilters = computed(() => {
+    return Object.values(filters.value).some((value) =>
+      Array.isArray(value)
+        ? value.length > 0
+        : value !== undefined && value !== false
+    );
+  });
+
+  const isChecked = (
+    value: string[] | undefined,
+    optionValue: string | number
+  ): boolean => {
+    if (!Array.isArray(value)) return false;
+    return value.includes(String(optionValue));
+  };
+
+  const toggleCheckbox = (key: string, optionValue: string | number) => {
+    const current = (filters.value[key] as string[]) || [];
+    const stringValue = String(optionValue);
+    const index = current.indexOf(stringValue);
+
+    if (index > -1) {
+      filters.value[key] = current.filter((item) => item !== stringValue);
+    } else {
+      filters.value[key] = [...current, stringValue];
+    }
+  };
+
+  const updateRangeFilter = (key: string, value: number[]) => {
+    if (value && value.length >= 2) {
+      const min = value[0] ?? 0;
+      const max = value[1] ?? 0;
+      filters.value[key] = [min, max];
+    }
+  };
+
+  const updateRadio = (key: string, value: string) => {
+    filters.value[key] = Number(value);
+  };
+
+  const updateSwitch = (key: string, checked: boolean) => {
+    filters.value[key] = checked;
+  };
+
+  const resetFilters = () => {
+    filters.value = {};
+    emit('filtersChanged', {});
+  };
+
+  const applyFilters = () => {
+    emit('filtersChanged', filters.value);
+  };
+</script>
+
 <template>
   <UiScrollArea class="h-full w-full">
     <div class="w-full space-y-4">
@@ -64,29 +193,52 @@
             <template v-if="filter.type === 'range'">
               <div class="space-y-3">
                 <UiSlider
-                  :model-value="getRangeValue(filter.key)"
+                  :model-value="
+                    rangeValues[filter.key] || [
+                      filter.min || 0,
+                      filter.max || 100000,
+                    ]
+                  "
                   :max="filter.max"
                   :min="filter.min"
                   :step="filter.step || 1"
                   class="w-full"
-                  @update:model-value="(value: number[] | undefined) => value && updateRange(filter.key, value)"
+                  @update:model-value="
+                    (val) => val && updateRangeFilter(filter.key, val)
+                  "
                   @pointerdown.stop
                 />
                 <div class="flex items-center space-x-2">
                   <UiInput
-                    :model-value="getRangeValue(filter.key)[0]"
+                    :model-value="
+                      rangeValues[filter.key]?.[0] || filter.min || 0
+                    "
                     type="number"
                     :placeholder="filter.placeholders?.[0] || 'От'"
                     class="flex-1"
-                    @update:model-value="(val: string | number) => updateRangeValue(filter.key, 0, val)"
+                    @update:model-value="
+                      (val) =>
+                        updateRangeFilter(filter.key, [
+                          Number(val),
+                          rangeValues[filter.key]?.[1] || filter.max || 100000,
+                        ])
+                    "
                   />
                   <span class="text-muted-foreground">—</span>
                   <UiInput
-                    :model-value="getRangeValue(filter.key)[1]"
+                    :model-value="
+                      rangeValues[filter.key]?.[1] || filter.max || 100000
+                    "
                     type="number"
                     :placeholder="filter.placeholders?.[1] || 'До'"
                     class="flex-1"
-                    @update:model-value="(val: string | number) => updateRangeValue(filter.key, 1, val)"
+                    @update:model-value="
+                      (val) =>
+                        updateRangeFilter(filter.key, [
+                          rangeValues[filter.key]?.[0] || filter.min || 0,
+                          Number(val),
+                        ])
+                    "
                   />
                 </div>
               </div>
@@ -140,173 +292,3 @@
     </div>
   </UiScrollArea>
 </template>
-
-<script setup lang="ts">
-  interface FilterOption {
-    value: string | number;
-    label: string;
-    count?: number;
-  }
-
-  interface FilterConfig {
-    key: string;
-    title: string;
-    type: 'checkbox' | 'range' | 'radio' | 'switch';
-    options?: FilterOption[];
-    min?: number;
-    max?: number;
-    step?: number;
-    placeholders?: string[];
-    label?: string;
-  }
-
-  interface FilterValues {
-    [key: string]:
-      | string[]
-      | [number, number]
-      | string
-      | number
-      | boolean
-      | undefined;
-  }
-
-  interface Props {
-    config?: FilterConfig[];
-    initialFilters?: FilterValues;
-    defaultOpenSections?: string[];
-  }
-
-  const props = withDefaults(defineProps<Props>(), {
-    config: () => [
-      {
-        key: 'categories',
-        title: 'Категории',
-        type: 'checkbox',
-        options: [
-          { value: 'sofas', label: 'Диваны', count: 45 },
-          { value: 'chairs', label: 'Стулья', count: 23 },
-          { value: 'tables', label: 'Столы', count: 31 },
-          { value: 'beds', label: 'Кровати', count: 12 },
-        ],
-      },
-      {
-        key: 'price',
-        title: 'Цена',
-        type: 'range',
-        min: 0,
-        max: 100000,
-        step: 1000,
-        placeholders: ['От', 'До'],
-      },
-      {
-        key: 'brands',
-        title: 'Бренды',
-        type: 'checkbox',
-        options: [
-          { value: 'ikea', label: 'IKEA' },
-          { value: 'ashley', label: 'Ashley' },
-          { value: 'wayfair', label: 'Wayfair' },
-        ],
-      },
-      {
-        key: 'rating',
-        title: 'Рейтинг',
-        type: 'radio',
-        options: [
-          { value: 4, label: '4 звезды и выше' },
-          { value: 3, label: '3 звезды и выше' },
-          { value: 2, label: '2 звезды и выше' },
-          { value: 1, label: '1 звезда и выше' },
-        ],
-      },
-      {
-        key: 'inStock',
-        title: 'Наличие',
-        type: 'switch',
-        label: 'Только в наличии',
-      },
-    ],
-    initialFilters: () => ({}),
-    defaultOpenSections: () => ['price', 'categories'],
-  });
-
-  const emit = defineEmits<{
-    filtersChanged: [filters: FilterValues];
-  }>();
-
-  const filters = ref<FilterValues>({ ...props.initialFilters });
-
-  const hasActiveFilters = computed(() => {
-    return Object.values(filters.value).some((value) =>
-      Array.isArray(value)
-        ? value.length > 0
-        : value !== undefined && value !== false
-    );
-  });
-
-  const isChecked = (
-    value: string[] | undefined,
-    optionValue: string | number
-  ): boolean => {
-    if (!Array.isArray(value)) return false;
-    return value.includes(String(optionValue));
-  };
-
-  const getRangeValue = (key: string): [number, number] => {
-    const filterConfig = props.config.find((f) => f.key === key);
-    const defaultMin = filterConfig?.min || 0;
-    const defaultMax = filterConfig?.max || 100000;
-
-    const value = filters.value[key];
-    if (Array.isArray(value) && value.length === 2) {
-      return value as [number, number];
-    }
-    return [defaultMin, defaultMax];
-  };
-
-  const toggleCheckbox = (key: string, optionValue: string | number) => {
-    const current = (filters.value[key] as string[]) || [];
-    const stringValue = String(optionValue);
-    const index = current.indexOf(stringValue);
-
-    if (index > -1) {
-      filters.value[key] = current.filter((item) => item !== stringValue);
-    } else {
-      filters.value[key] = [...current, stringValue];
-    }
-  };
-
-  const updateRange = (key: string, value: number[]) => {
-    if (value && value.length === 2) {
-      filters.value[key] = value as [number, number];
-    }
-  };
-
-  const updateRangeValue = (
-    key: string,
-    index: number,
-    value: string | number
-  ) => {
-    const current = getRangeValue(key);
-    const newRange = [...current] as [number, number];
-    newRange[index] = Number(value);
-    filters.value[key] = newRange;
-  };
-
-  const updateRadio = (key: string, value: string) => {
-    filters.value[key] = Number(value);
-  };
-
-  const updateSwitch = (key: string, checked: boolean) => {
-    filters.value[key] = checked;
-  };
-
-  const resetFilters = () => {
-    filters.value = {};
-    emit('filtersChanged', {});
-  };
-
-  const applyFilters = () => {
-    emit('filtersChanged', filters.value);
-  };
-</script>
