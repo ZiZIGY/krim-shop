@@ -1,93 +1,37 @@
 <script setup lang="ts">
-  interface Props {
-    initialProducts?: Product[];
-    loading?: boolean;
-    currentPage?: number;
-    totalPages?: number;
-    cardsCount?: number;
-  }
-
-  const props = withDefaults(defineProps<Props>(), {
-    initialProducts: () => [],
-    loading: false,
-    currentPage: 1,
-    totalPages: 1,
-    cardsCount: 0
-  });
-  
-  const router = useRouter();
+  const config = useRuntimeConfig();
   const route = useRoute();
-  const currentPage = shallowRef(Number(route.query.page) || props.currentPage || 1);
-  
-  // Получаем отсортированный список товаров
-  const sortOrder = ref(route.query.sort as string || 'default');
-  
-  const sortProducts = computed(() => {
-    if (!props.initialProducts) return [];
-    
-    const products = [...props.initialProducts];
-    
-    switch (sortOrder.value) {
-      case 'price-asc':
-        return products.sort((a, b) => parseFloat(a.price) - parseFloat(b.price));
-      case 'price-desc':
-        return products.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
-      case 'name':
-        return products.sort((a, b) => a.title.localeCompare(b.title));
-      default:
-        return products;
-    }
+
+  const itemsPerPage = 24;
+
+  const routeQuery = computed(() => route.query);
+  const currentPage = shallowRef<number>(Number(route.query.page) || 1);
+
+  const { data, status } = await useFetch<CatalogResponse>('/api/products/', {
+    baseURL: config.public.apiUrl,
+    query: routeQuery,
   });
-  
-  // Обработчики событий
-  const handlePageChange = (page: number) => {
-    currentPage.value = page;
-    
-    const query = { ...route.query, page: page.toString() };
-    if (page === 1) {
-      delete query.page;
-    }
-    
-    router.push({ query });
-  };
-  
-  const handleSortChange = (event: Event) => {
-    const target = event.target as HTMLSelectElement;
-    sortOrder.value = target.value;
-    
-    const query = { ...route.query, sort: target.value };
-    if (target.value === 'default') {
-      delete query.sort;
-    }
-    
-    router.push({ query });
-  };
+
+  const totalPages = computed(() => data.value?.count || 0 / itemsPerPage);
+
+  const handlePageChange = (value: number) =>
+    navigateTo({
+      query: {
+        ...route.query,
+        page: value,
+      },
+    });
 </script>
 
 <template>
   <div class="space-y-6">
     <!-- Заголовок и сортировка -->
 
-    <div class="flex items-center gap-2">
-      <span class="text-sm text-muted-foreground">Сортировка:</span>
-      <select
-        class="bg-background border border-border rounded-md px-3 py-1 text-sm"
-        :value="sortOrder"
-        @change="handleSortChange"
-      >
-        <option value="default">По умолчанию</option>
-        <option value="price-asc">Цена: по возрастанию</option>
-        <option value="price-desc">Цена: по убыванию</option>
-        <option value="name">По названию</option>
-      </select>
-    </div>
-
-    <!-- Сетка товаров -->
     <div
       class="grid gap-6 transition-all duration-300 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4"
     >
       <ModuleCatalogCard
-        v-for="product in sortProducts"
+        v-for="product in data?.results.results"
         :key="product.id"
         :product="product"
       />
@@ -95,13 +39,13 @@
 
     <!-- Пагинация -->
     <div
-      v-if="props.totalPages > 1"
+      v-if="totalPages > 1"
       class="flex justify-center pt-8"
     >
       <UiPagination
         v-slot="{ page }"
-        :items-per-page="24"
-        :total="props.cardsCount || 0"
+        :items-per-page="itemsPerPage"
+        :total="data?.count"
         :default-page="currentPage"
         @update:page="handlePageChange"
       >
@@ -121,8 +65,6 @@
             </UiPaginationItem>
           </template>
 
-          <UiPaginationEllipsis :index="4" />
-
           <UiPaginationNext />
         </UiPaginationContent>
       </UiPagination>
@@ -130,7 +72,7 @@
 
     <!-- Пустое состояние -->
     <div
-      v-if="sortProducts.length === 0 && !props.loading"
+      v-if="!data?.results.results.length && status !== 'pending'"
       class="text-center py-12"
     >
       <Icon
@@ -141,7 +83,6 @@
       <p class="text-muted-foreground mb-4">
         Попробуйте изменить параметры фильтрации
       </p>
-      <UiButton variant="outline"> Сбросить фильтры </UiButton>
     </div>
   </div>
 </template>

@@ -58,9 +58,9 @@
         v-if="!product.stock"
         class="absolute inset-0 bg-background/80 flex items-center justify-center"
       >
-        <span class="text-muted-foreground font-medium text-sm"
-          >Нет в наличии</span
-        >
+        <span class="text-muted-foreground font-medium text-sm">
+          Нет в наличии
+        </span>
       </div>
     </div>
 
@@ -68,7 +68,7 @@
     <div class="flex-1 flex flex-col p-4">
       <div class="flex-1">
         <NuxtLink
-          :to="`/product/${product.id}`"
+          :to="`/product/${product.slug}`"
           class="text-sm font-medium line-clamp-2 group-hover:text-primary transition-colors mb-1"
         >
           {{ product.title }}
@@ -79,9 +79,20 @@
 
         <!-- Характеристики -->
         <div class="space-y-0.5 text-xs text-muted-foreground mb-3">
-          <div v-if="product.width"> {{ product.width }} </div>
-          <div v-if="product.height"> {{ product.height }} </div>
-          <div v-if="product.depth"> {{ product.depth }} </div>
+          <div
+            v-if="product.color"
+            class="flex gap-2 items-center"
+          >
+            <div
+              class="size-5 shadow rounded"
+              :style="{ backgroundColor: product.color_hex }"
+            />
+            {{ product.color_name }}
+          </div>
+          <p>
+            {{ Number(product.width) }} x {{ Number(product.height) }} x
+            {{ Number(product.depth) }} см
+          </p>
         </div>
       </div>
 
