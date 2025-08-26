@@ -30,7 +30,7 @@ declare interface FilterAttribute {
   id: number;
   name: string;
   slug: string;
-  filter_widget: string;
+  filter_widget: 'radio' | 'checkbox' | 'chips' | 'select';
   is_multiselect: boolean;
   filter_order: number;
   options: FilterOption[];
@@ -45,18 +45,42 @@ declare interface FilterColor {
 }
 
 declare interface FilterRanges {
-  [key: string]: {
-    min: number;
-    max: number;
+  title: string;
+  min: number;
+  max: number;
+}
+declare interface CatalogFilters {
+  ranges: {
+    [key: string]: FilterRanges;
+  };
+  colors: FilterColor[];
+  tags: FilterColor[];
+  attributes: {
+    [key: string]: FilterAttribute;
   };
 }
 
-declare interface CatalogFilters {
-  ranges: FilterRanges;
-  colors: FilterColor[];
-  tags: FilterColor[];
-  attributes: FilterAttribute[];
+// Простые интерфейсы для фильтрации
+declare interface FilterOption {
+  value: string | number;
+  title: string;
+  count?: number;
+  color?: string;
 }
+
+declare interface FilterConfig {
+  key: string;
+  title: string;
+  type: 'checkbox' | 'range' | 'radio' | 'switch';
+  options?: FilterOption[];
+  min?: number;
+  max?: number;
+  step?: number;
+  placeholder?: string;
+  label?: string;
+}
+
+// Значения фильтров в едином формате
 
 declare interface CatalogResponse {
   count: number;
