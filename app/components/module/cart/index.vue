@@ -1,80 +1,39 @@
 <script setup lang="ts">
-  import { ref } from 'vue';
+  const { items, set, remove } = useCart();
+  const config = useRuntimeConfig();
 
-  // Типы
-  interface CartItem {
-    id: string;
-    name: string;
-    price: number;
-    quantity: number;
-    image: string;
-    category: string;
-  }
-
-  // Тестовые данные
-  const cartItems = ref<CartItem[]>([
+  const { data, pending } = useFetch<{ results: Product[]; missing: [] }>(
+    '/api/products/by-ids',
     {
-      id: '1',
-      name: 'Диван "Комфорт"',
-      price: 45000,
-      quantity: 1,
-      image: '/shkaf.png',
-      category: 'Мягкая мебель',
-    },
-    {
-      id: '2',
-      name: 'Стол обеденный "Классик"',
-      price: 18000,
-      quantity: 1,
-      image: '/shkaf.png',
-      category: 'Столы и стулья',
-    },
-    {
-      id: '3',
-      name: 'Кресло "Уют"',
-      price: 22000,
-      quantity: 2,
-      image: '/shkaf.png',
-      category: 'Мягкая мебель',
-    },
-    {
-      id: '4',
-      name: 'Шкаф-купе "Модерн"',
-      price: 35000,
-      quantity: 1,
-      image: '/shkaf.png',
-      category: 'Корпусная мебель',
-    },
-    {
-      id: '5',
-      name: 'Кровать "Соня"',
-      price: 28000,
-      quantity: 1,
-      image: '/shkaf.png',
-      category: 'Спальная мебель',
-    },
-  ]);
-
-  // Методы
-  const updateQuantity = (itemId: string, newQuantity: number) => {
-    const item = cartItems.value.find((item) => item.id === itemId);
-    if (item) {
-      if (newQuantity <= 0) {
-        removeItem(itemId);
-      } else {
-        item.quantity = newQuantity;
-      }
+      query: { ids: items.value.map((i) => i.id).join(',') },
+      baseURL: config.public.apiUrl,
+      server: false,
     }
+  );
+
+  const cartItems = computed(() => {
+    if (!data.value) return [];
+    return items.value
+      .map(({ id, count }) => {
+        const product = data.value!.results.find((p) => p.id === id);
+        return product ? { product, quantity: count } : null;
+      })
+      .filter(
+        (item): item is { product: Product; quantity: number } => item !== null
+      );
+  });
+
+  const updateQuantity = (productId: number, newQuantity: number) => {
+    set(productId, newQuantity);
   };
 
-  const removeItem = (itemId: string) => {
-    cartItems.value = cartItems.value.filter((item) => item.id !== itemId);
+  const removeItem = (productId: number) => {
+    remove(productId);
   };
 </script>
 
 <template>
   <div>
-    <!-- Заголовок -->
     <div class="mb-8">
       <h1 class="text-3xl font-bold mb-2">Корзина</h1>
       <p class="text-muted-foreground">
@@ -85,19 +44,28 @@
       </p>
     </div>
 
-    <!-- Основной контент -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <!-- Список товаров -->
-      <ModuleCartItemsList
-        :items="cartItems"
-        @update-quantity="updateQuantity"
-        @remove-item="removeItem"
-      />
-
+      <div class="lg:col-span-2 space-y-4">
+        <template v-if="pending">
+          <CardSkeleton
+            v-for="n in 3"
+            :key="n"
+          />
+        </template>
+        <template v-else>
+          <ModuleCartCard
+            v-for="item in cartItems"
+            :key="item.product.id"
+            :product="item.product"
+            :quantity="item.quantity"
+            @update-quantity="updateQuantity"
+            @remove-item="removeItem"
+          />
+        </template>
+      </div>
       <!-- Панель итогов -->
       <ModuleCartSummary :items="cartItems" />
     </div>
   </div>
 </template>
-
-<style scoped></style>

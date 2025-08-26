@@ -19,6 +19,8 @@
   const formatPrice = (price: number): string => {
     return new Intl.NumberFormat('ru-RU').format(price);
   };
+
+  const { add } = useCart();
 </script>
 
 <template>
@@ -37,9 +39,11 @@
       <div
         class="absolute top-2 right-2 flex flex-col gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
       >
-        <WidgetFavorite :product-id="product.id" />
+        <ClientOnly>
+          <WidgetFavorite :product-id="Number(product.id)" />
+        </ClientOnly>
 
-        <NuxtLink :to="`/product/${product.id}`">
+        <NuxtLink :to="`/product/${product.slug}`">
           <UiButton
             size="icon"
             variant="secondary"
@@ -117,6 +121,7 @@
           size="sm"
           class="flex-1 text-xs"
           :disabled="!product.stock"
+          @click="add(product.id)"
         >
           <Icon
             name="mdi:cart-plus"

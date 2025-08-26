@@ -408,13 +408,6 @@
                 </div>
                 <div class="flex items-center gap-3">
                   <Icon
-                    name="mdi:youtube"
-                    class="h-4 w-4 text-primary"
-                  />
-                  <span class="text-sm">YouTube: МебельМаркет</span>
-                </div>
-                <div class="flex items-center gap-3">
-                  <Icon
                     name="mdi:telegram"
                     class="h-4 w-4 text-primary"
                   />
@@ -432,20 +425,22 @@
 <script setup lang="ts">
   import { motion } from 'motion-v';
 
+  const config = useRuntimeConfig();
   // SEO
   useHead({
-    title: 'О компании - МебельМаркет',
+    title: `О компании - ${config.public.siteName}`,
     meta: [
       {
         name: 'description',
-        content:
-          'Узнайте больше о компании МебельМаркет. 13+ лет на рынке, 50K+ довольных клиентов. Качественная мебель для дома и офиса.',
+        content: `Узнайте больше о компании ${config.public.siteName}. 13+ лет на рынке, 50K+ довольных клиентов. Качественная мебель для дома и офиса.`,
       },
-      { property: 'og:title', content: 'О компании - МебельМаркет' },
+      {
+        property: 'og:title',
+        content: `О компании - ${config.public.siteName}`,
+      },
       {
         property: 'og:description',
-        content:
-          'Узнайте больше о компании МебельМаркет. 13+ лет на рынке, 50K+ довольных клиентов.',
+        content: `Узнайте больше о компании ${config.public.siteName}. 13+ лет на рынке, 50K+ довольных клиентов.`,
       },
     ],
   });

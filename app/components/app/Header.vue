@@ -1,4 +1,8 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+  const favorites = useLocalStorage('favorites', []);
+
+  const cart = useLocalStorage('cart', []);
+</script>
 
 <template>
   <header class="sticky top-0 z-50 w-full border-b bg-background">
@@ -47,8 +51,8 @@
 
         <!-- Правая часть: Пользовательское меню -->
         <WidgetUserPanel
-          :favorite-count="0"
-          :cart-count="3"
+          :favorite-count="favorites.length"
+          :cart-count="cart.length"
           :is-authenticated="false"
         />
       </div>

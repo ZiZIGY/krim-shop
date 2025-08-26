@@ -202,23 +202,22 @@
 <script setup lang="ts">
   import { motion } from 'motion-v';
 
+  const config = useRuntimeConfig();
   // SEO
   useHead({
-    title: 'Политика конфиденциальности - МебельМаркет',
+    title: `Политика конфиденциальности - ${config.public.siteName}`,
     meta: [
       {
-        name: 'description',
-        content:
-          'Политика конфиденциальности МебельМаркет. Узнайте, как мы защищаем ваши персональные данные.',
+        name: `description`,
+        content: `Политика конфиденциальности ${config.public.siteName}. Узнайте, как мы защищаем ваши персональные данные.`,
       },
       {
-        property: 'og:title',
-        content: 'Политика конфиденциальности - МебельМаркет',
+        property: `og:title`,
+        content: `Политика конфиденциальности - ${config.public.siteName}`,
       },
       {
-        property: 'og:description',
-        content:
-          'Политика конфиденциальности МебельМаркет. Защита персональных данных.',
+        property: `og:description`,
+        content: `Политика конфиденциальности ${config.public.siteName}. Защита персональных данных.`,
       },
     ],
   });

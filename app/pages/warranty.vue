@@ -424,20 +424,19 @@
 <script setup lang="ts">
   import { motion } from 'motion-v';
 
+  const config = useRuntimeConfig();
   // SEO
   useHead({
-    title: 'Гарантия - МебельМаркет',
+    title: `Гарантия - ${config.public.siteName}`,
     meta: [
       {
-        name: 'description',
-        content:
-          'Гарантия на мебель от 2 до 3 лет. Бесплатный ремонт и замена деталей. Условия гарантии и сервисное обслуживание.',
+        name: `description`,
+        content: `Гарантия на мебель от 2 до 3 лет. Бесплатный ремонт и замена деталей. Условия гарантии и сервисное обслуживание.`,
       },
-      { property: 'og:title', content: 'Гарантия - МебельМаркет' },
+      { property: `og:title`, content: `Гарантия - ${config.public.siteName}` },
       {
-        property: 'og:description',
-        content:
-          'Гарантия на мебель от 2 до 3 лет. Бесплатный ремонт и замена деталей.',
+        property: `og:description`,
+        content: `Гарантия на мебель от 2 до 3 лет. Бесплатный ремонт и замена деталей.`,
       },
     ],
   });

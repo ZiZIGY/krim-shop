@@ -156,19 +156,21 @@
   ];
 
   // SEO
+  const config = useRuntimeConfig();
   useHead({
-    title: 'Каталог мебели - МебельМаркет',
+    title: `Каталог мебели - ${config.public.siteName}`,
     meta: [
       {
-        name: 'description',
-        content:
-          'Каталог мебели для всех комнат. Гостиная, спальня, кухня, ванная, детская, офис, освещение и декор.',
+        name: `description`,
+        content: `Каталог мебели для всех комнат. Гостиная, спальня, кухня, ванная, детская, офис, освещение и декор.`,
       },
-      { property: 'og:title', content: 'Каталог мебели - МебельМаркет' },
       {
-        property: 'og:description',
-        content:
-          'Каталог мебели для всех комнат. Выберите категорию и найдите идеальную мебель.',
+        property: `og:title`,
+        content: `Каталог мебели - ${config.public.siteName}`,
+      },
+      {
+        property: `og:description`,
+        content: `Каталог мебели для всех комнат. Выберите категорию и найдите идеальную мебель.`,
       },
     ],
   });

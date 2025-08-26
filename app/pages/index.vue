@@ -1,17 +1,17 @@
 <script lang="ts" setup>
+  const config = useRuntimeConfig();
+
   useHead({
-    title: 'Главная - МебельМаркет',
+    title: `Главная - ${config.public.siteName}`,
     meta: [
       {
-        name: 'description',
-        content:
-          'Главная страница МебельМаркет. Качественная мебель для дома и офиса.',
+        name: `description`,
+        content: `Главная страница ${config.public.siteName}. Качественная мебель для дома и офиса.`,
       },
-      { property: 'og:title', content: 'Главная - МебельМаркет' },
+      { property: `og:title`, content: `Главная - ${config.public.siteName}` },
       {
-        property: 'og:description',
-        content:
-          'Главная страница МебельМаркет. Качественная мебель для дома и офиса.',
+        property: `og:description`,
+        content: `Главная страница ${config.public.siteName}. Качественная мебель для дома и офиса.`,
       },
     ],
   });

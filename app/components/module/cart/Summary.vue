@@ -1,3 +1,43 @@
+<script setup lang="ts">
+  interface Props {
+    items: { product: Product; quantity: number }[];
+  }
+
+  const props = defineProps<Props>();
+
+  defineEmits<{
+    'proceed-to-checkout': [];
+  }>();
+
+  // Вычисляемые свойства
+  const subtotal = computed(() => {
+    return props.items.reduce(
+      (sum, item) => sum + Number(item.product.price) * item.quantity,
+      0
+    );
+  });
+
+  const totalItems = computed(() => {
+    return props.items.reduce((sum, item) => sum + item.quantity, 0);
+  });
+
+  const deliveryCost = computed(() => {
+    return subtotal.value > 50000 ? 0 : 2000; // Бесплатная доставка от 50k
+  });
+
+  const total = computed(() => {
+    return subtotal.value + deliveryCost.value;
+  });
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat('ru-RU', {
+      style: 'currency',
+      currency: 'RUB',
+      minimumFractionDigits: 0,
+    }).format(price);
+  };
+</script>
+
 <template>
   <div class="lg:col-span-1">
     <div class="sticky top-[8.625rem] bg-background border rounded-lg p-6">
@@ -8,9 +48,9 @@
       <div class="space-y-4">
         <!-- Стоимость товаров -->
         <div class="flex justify-between">
-          <span class="text-sm text-muted-foreground"
-            >Товары ({{ totalItems }})</span
-          >
+          <span class="text-sm text-muted-foreground">
+            Товары ({{ totalItems }})
+          </span>
           <span class="font-medium">{{ formatPrice(subtotal) }}</span>
         </div>
 
@@ -66,56 +106,3 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-  import { computed } from 'vue';
-
-  interface CartItem {
-    id: string;
-    name: string;
-    price: number;
-    quantity: number;
-    image: string;
-    category: string;
-  }
-
-  interface Props {
-    items: CartItem[];
-  }
-
-  const props = defineProps<Props>();
-
-  defineEmits<{
-    'proceed-to-checkout': [];
-  }>();
-
-  // Вычисляемые свойства
-  const subtotal = computed(() => {
-    return props.items.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0
-    );
-  });
-
-  const totalItems = computed(() => {
-    return props.items.reduce((sum, item) => sum + item.quantity, 0);
-  });
-
-  const deliveryCost = computed(() => {
-    return subtotal.value > 50000 ? 0 : 2000; // Бесплатная доставка от 50k
-  });
-
-  const total = computed(() => {
-    return subtotal.value + deliveryCost.value;
-  });
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('ru-RU', {
-      style: 'currency',
-      currency: 'RUB',
-      minimumFractionDigits: 0,
-    }).format(price);
-  };
-</script>
-
-<style scoped></style>

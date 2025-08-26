@@ -348,19 +348,22 @@
 <script setup lang="ts">
   import { motion } from 'motion-v';
 
+  const config = useRuntimeConfig();
   // SEO
   useHead({
-    title: 'Условия оплаты - МебельМаркет',
+    title: `Условия оплаты - ${config.public.siteName}`,
     meta: [
       {
-        name: 'description',
-        content:
-          'Удобные и безопасные способы оплаты мебели. Банковские карты, электронные кошельки, наложенный платеж. SSL-шифрование и PCI DSS.',
+        name: `description`,
+        content: `Удобные и безопасные способы оплаты мебели. Банковские карты, электронные кошельки, наложенный платеж. SSL-шифрование и PCI DSS.`,
       },
-      { property: 'og:title', content: 'Условия оплаты - МебельМаркет' },
       {
-        property: 'og:description',
-        content: 'Удобные и безопасные способы оплаты мебели',
+        property: `og:title`,
+        content: `Условия оплаты - ${config.public.siteName}`,
+      },
+      {
+        property: `og:description`,
+        content: `Удобные и безопасные способы оплаты мебели`,
       },
     ],
   });

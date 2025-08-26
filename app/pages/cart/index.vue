@@ -1,3 +1,22 @@
+<script setup lang="ts">
+  // SEO
+  const config = useRuntimeConfig();
+  useHead({
+    title: `Корзина - ${config.public.siteName}`,
+    meta: [
+      {
+        name: `description`,
+        content: `Корзина покупок. Просмотрите выбранные товары и оформите заказ.`,
+      },
+      { property: `og:title`, content: `Корзина - ${config.public.siteName}` },
+      {
+        property: `og:description`,
+        content: `Корзина покупок. Просмотрите выбранные товары и оформите заказ.`,
+      },
+    ],
+  });
+</script>
+
 <template>
   <div class="container mx-auto px-4 py-8">
     <!-- Хлебные крошки -->
@@ -21,25 +40,5 @@
     <ModuleCart />
   </div>
 </template>
-
-<script setup lang="ts">
-  // SEO
-  useHead({
-    title: 'Корзина - МебельМаркет',
-    meta: [
-      {
-        name: 'description',
-        content:
-          'Корзина покупок. Просмотрите выбранные товары и оформите заказ.',
-      },
-      { property: 'og:title', content: 'Корзина - МебельМаркет' },
-      {
-        property: 'og:description',
-        content:
-          'Корзина покупок. Просмотрите выбранные товары и оформите заказ.',
-      },
-    ],
-  });
-</script>
 
 <style scoped></style>

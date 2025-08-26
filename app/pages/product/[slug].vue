@@ -79,7 +79,7 @@
 
   // SEO
   useHead({
-    title: `${product?.value?.title} - МебельМаркет`,
+    title: `${product?.value?.title} - ${config.public.siteName}`,
     meta: [
       {
         name: 'description',
@@ -87,7 +87,7 @@
       },
       {
         property: 'og:title',
-        content: `${product?.value?.title} - МебельМаркет`,
+        content: `${product?.value?.title} - ${config.public.siteName}`,
       },
       {
         property: 'og:description',

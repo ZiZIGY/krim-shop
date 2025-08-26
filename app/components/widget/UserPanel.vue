@@ -1,3 +1,13 @@
+<script lang="ts" setup>
+  interface Props {
+    favoriteCount: number;
+    cartCount: number;
+    isAuthenticated?: boolean;
+  }
+
+  defineProps<Props>();
+</script>
+
 <template>
   <nav class="flex items-center gap-1">
     <!-- Избранное -->
@@ -12,12 +22,14 @@
       />
       <span class="sr-only">Избранное</span>
       <!-- Счетчик избранного -->
-      <div
-        v-if="favoriteCount > 0"
-        class="absolute -top-1 -right-1 h-5 w-5 bg-destructive text-destructive-foreground rounded-full text-xs flex items-center justify-center font-medium"
-      >
-        {{ favoriteCount }}
-      </div>
+      <ClientOnly>
+        <div
+          v-if="favoriteCount > 0"
+          class="absolute -top-1 -right-1 h-5 w-5 bg-primary text-primary-foreground rounded-full text-xs flex items-center justify-center font-medium"
+        >
+          {{ favoriteCount > 99 ? '99+' : favoriteCount }}
+        </div>
+      </ClientOnly>
     </NuxtLink>
 
     <!-- Корзина -->
@@ -31,31 +43,20 @@
         class="h-5 w-5"
       />
       <span class="sr-only">Корзина</span>
+
       <!-- Счетчик товаров в корзине -->
-      <div
-        v-if="cartCount > 0"
-        class="absolute -top-1 -right-1 h-5 w-5 bg-primary text-primary-foreground rounded-full text-xs flex items-center justify-center font-medium"
-      >
-        {{ cartCount > 99 ? '99+' : cartCount }}
-      </div>
+      <ClientOnly>
+        <div
+          v-if="cartCount > 0"
+          class="absolute -top-1 -right-1 h-5 w-5 bg-primary text-primary-foreground rounded-full text-xs flex items-center justify-center font-medium"
+        >
+          {{ cartCount > 99 ? '99+' : cartCount }}
+        </div>
+      </ClientOnly>
     </NuxtLink>
 
     <WidgetTheme />
   </nav>
 </template>
-
-<script lang="ts" setup>
-  interface Props {
-    favoriteCount?: number;
-    cartCount?: number;
-    isAuthenticated?: boolean;
-  }
-
-  withDefaults(defineProps<Props>(), {
-    favoriteCount: 0,
-    cartCount: 0,
-    isAuthenticated: false,
-  });
-</script>
 
 <style scoped></style>

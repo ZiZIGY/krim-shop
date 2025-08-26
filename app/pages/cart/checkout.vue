@@ -230,7 +230,7 @@
                 <div class="flex justify-between text-sm">
                   <span>Доставка</span>
                   <span>{{
-                    deliveryCost === 0 ? 'Бесплатно' : formatPrice(deliveryCost)
+                    deliveryCost === 0 ? `Бесплатно` : formatPrice(deliveryCost)
                   }}</span>
                 </div>
                 <div class="border-t pt-2">
@@ -283,20 +283,20 @@
   // Тестовые данные корзины
   const cartItems = shallowRef([
     {
-      id: '1',
-      name: 'Диван "Комфорт"',
+      id: `1`,
+      name: `Диван "Комфорт"`,
       price: 45000,
       quantity: 1,
     },
     {
-      id: '2',
-      name: 'Стол обеденный "Классик"',
+      id: `2`,
+      name: `Стол обеденный "Классик"`,
       price: 18000,
       quantity: 1,
     },
     {
-      id: '3',
-      name: 'Кресло "Уют"',
+      id: `3`,
+      name: `Кресло "Уют"`,
       price: 22000,
       quantity: 2,
     },
@@ -323,30 +323,35 @@
   });
 
   const formatPrice = (price: number) => {
-    return new Intl.NumberFormat('ru-RU', {
-      style: 'currency',
-      currency: 'RUB',
+    return new Intl.NumberFormat(`ru-RU`, {
+      style: `currency`,
+      currency: `RUB`,
       minimumFractionDigits: 0,
     }).format(price);
   };
 
   const placeOrder = () => {
     // Здесь будет логика оформления заказа
-    console.log('Оформление заказа...');
+    console.log(`Оформление заказа...`);
   };
 
   // SEO
+  const config = useRuntimeConfig();
+
   useHead({
-    title: 'Оформление заказа - МебельМаркет',
+    title: `Оформление заказа - ${config.public.siteName}`,
     meta: [
       {
-        name: 'description',
-        content: 'Оформление заказа. Заполните данные для доставки и оплаты.',
+        name: `description`,
+        content: `Оформление заказа. Заполните данные для доставки и оплаты.`,
       },
-      { property: 'og:title', content: 'Оформление заказа - МебельМаркет' },
       {
-        property: 'og:description',
-        content: 'Оформление заказа. Заполните данные для доставки и оплаты.',
+        property: `og:title`,
+        content: `Оформление заказа - ${config.public.siteName}`,
+      },
+      {
+        property: `og:description`,
+        content: `Оформление заказа. Заполните данные для доставки и оплаты.`,
       },
     ],
   });
