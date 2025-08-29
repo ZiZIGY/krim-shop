@@ -33,7 +33,7 @@
     <UiDropdownMenuTrigger as-child>
       <UiButton
         variant="ghost"
-        class="gap-2 text-sm"
+        class="gap-2 text-sm hidden lg:block"
       >
         Покупателям
         <Icon
