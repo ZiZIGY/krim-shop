@@ -11,7 +11,10 @@
     '/api/products/',
     {
       baseURL: config.public.apiUrl,
-      query: routeQuery,
+      query: {
+        category: route.params.slug,
+        ...routeQuery.value,
+      },
     }
   );
 
