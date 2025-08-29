@@ -7,10 +7,13 @@
   const routeQuery = computed(() => route.query);
   const currentPage = shallowRef<number>(Number(route.query.page) || 1);
 
-  const { data, status } = await useFetch<CatalogResponse>('/api/products/', {
-    baseURL: config.public.apiUrl,
-    query: routeQuery,
-  });
+  const { data, status } = await useFetch<ApiProductsResponse>(
+    '/api/products/',
+    {
+      baseURL: config.public.apiUrl,
+      query: routeQuery,
+    }
+  );
 
   const totalPages = computed(() => data.value?.count || 0 / itemsPerPage);
 

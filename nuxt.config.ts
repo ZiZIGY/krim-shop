@@ -57,7 +57,7 @@ export default defineNuxtConfig({
   colorMode: {
     classSuffix: '',
     preference: 'system',
-    storage: 'cookie',
+    storage: 'localStorage',
   },
 
   vite: {

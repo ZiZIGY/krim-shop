@@ -20,7 +20,6 @@
         name="mdi:heart-outline"
         class="h-5 w-5"
       />
-      <span class="sr-only">Избранное</span>
       <!-- Счетчик избранного -->
       <ClientOnly>
         <div
@@ -39,10 +38,9 @@
       aria-label="Корзина"
     >
       <Icon
-        name="mdi:cart-outline"
-        class="h-5 w-5"
+        name="bx-basket"
+        class="font-extrabold"
       />
-      <span class="sr-only">Корзина</span>
 
       <!-- Счетчик товаров в корзине -->
       <ClientOnly>

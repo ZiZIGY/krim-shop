@@ -1,3 +1,32 @@
+<script setup lang="ts">
+  import { motion } from 'motion-v';
+
+  // SEO
+  const config = useRuntimeConfig();
+
+  const { data } = await useFetch<ApiCategoriesResponse>('/api/categories/', {
+    baseURL: config.public.apiUrl,
+  });
+
+  useHead({
+    title: `Каталог мебели - ${config.public.siteName}`,
+    meta: [
+      {
+        name: `description`,
+        content: `Каталог мебели для всех комнат. Гостиная, спальня, кухня, ванная, детская, офис, освещение и декор.`,
+      },
+      {
+        property: `og:title`,
+        content: `Каталог мебели - ${config.public.siteName}`,
+      },
+      {
+        property: `og:description`,
+        content: `Каталог мебели для всех комнат. Выберите категорию и найдите идеальную мебель.`,
+      },
+    ],
+  });
+</script>
+
 <template>
   <div class="container mx-auto px-4 py-8">
     <!-- Хлебные крошки -->
@@ -38,14 +67,14 @@
       :transition="{ duration: 0.6, delay: 0.1 }"
     >
       <motion.div
-        v-for="(category, index) in categories"
+        v-for="(category, index) in data?.results"
         :key="category.id"
         :initial="{ opacity: 0, y: 20 }"
         :while-in-view="{ opacity: 1, y: 0 }"
         :transition="{ duration: 0.6, delay: 0.1 + index * 0.1 }"
       >
         <NuxtLink
-          :to="category.link"
+          :to="`/catalog/${category.slug}`"
           class="group block h-full"
         >
           <UiCard
@@ -56,7 +85,7 @@
                 class="w-16 h-16 bg-primary/10 rounded-lg flex items-center justify-center mb-4 group-hover:scale-110 transition-transform"
               >
                 <Icon
-                  :name="category.icon"
+                  name="mdi:sofa"
                   class="h-8 w-8 text-primary"
                 />
               </div>
@@ -66,10 +95,9 @@
                 {{ category.name }}
               </UiCardTitle>
               <UiCardDescription class="flex-1">
-                {{ category.description }}
+                {{ category.name }}
               </UiCardDescription>
               <div class="flex items-center text-sm text-muted-foreground mt-4">
-                <span>{{ category.count }} товаров</span>
                 <Icon
                   name="mdi:arrow-right"
                   class="h-4 w-4 ml-auto group-hover:translate-x-1 transition-transform"
@@ -82,98 +110,5 @@
     </motion.div>
   </div>
 </template>
-
-<script setup lang="ts">
-  import { motion } from 'motion-v';
-
-  // Данные категорий
-  const categories = [
-    {
-      id: 'gostinaya',
-      name: 'Гостиная',
-      description: 'Диваны, кресла, столы, шкафы и другая мебель для гостиной',
-      icon: 'mdi:sofa',
-      link: '/catalog/gostinaya',
-      count: 156,
-    },
-    {
-      id: 'spalnya',
-      name: 'Спальня',
-      description: 'Кровати, шкафы, тумбы, комоды и другая мебель для спальни',
-      icon: 'mdi:bed',
-      link: '/catalog/spalnya',
-      count: 203,
-    },
-    {
-      id: 'kuhnya',
-      name: 'Кухня',
-      description:
-        'Кухонные гарнитуры, столы, стулья и другая мебель для кухни',
-      icon: 'mdi:silverware-fork-knife',
-      link: '/catalog/kuhnya',
-      count: 89,
-    },
-    {
-      id: 'vannaya',
-      name: 'Ванная',
-      description: 'Шкафчики, полки, зеркала и другая мебель для ванной',
-      icon: 'mdi:shower',
-      link: '/catalog/vannaya',
-      count: 67,
-    },
-    {
-      id: 'detskaya',
-      name: 'Детская',
-      description: 'Кровати, столы, шкафы и другая мебель для детской комнаты',
-      icon: 'mdi:baby-face',
-      link: '/catalog/detskaya',
-      count: 134,
-    },
-    {
-      id: 'ofis',
-      name: 'Офис',
-      description: 'Столы, стулья, шкафы и другая мебель для офиса',
-      icon: 'mdi:desk',
-      link: '/catalog/ofis',
-      count: 98,
-    },
-    {
-      id: 'osveshchenie',
-      name: 'Освещение',
-      description: 'Люстры, светильники, лампы и другие осветительные приборы',
-      icon: 'mdi:lightbulb',
-      link: '/catalog/osveshchenie',
-      count: 245,
-    },
-    {
-      id: 'dekor',
-      name: 'Декор',
-      description: 'Подушки, картины, вазы и другие декоративные элементы',
-      icon: 'mdi:flower',
-      link: '/catalog/dekor',
-      count: 178,
-    },
-  ];
-
-  // SEO
-  const config = useRuntimeConfig();
-  useHead({
-    title: `Каталог мебели - ${config.public.siteName}`,
-    meta: [
-      {
-        name: `description`,
-        content: `Каталог мебели для всех комнат. Гостиная, спальня, кухня, ванная, детская, офис, освещение и декор.`,
-      },
-      {
-        property: `og:title`,
-        content: `Каталог мебели - ${config.public.siteName}`,
-      },
-      {
-        property: `og:description`,
-        content: `Каталог мебели для всех комнат. Выберите категорию и найдите идеальную мебель.`,
-      },
-    ],
-  });
-</script>
 
 <style scoped></style>

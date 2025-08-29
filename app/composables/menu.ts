@@ -10,14 +10,6 @@ interface MenuSection {
 }
 
 export const useMenu = () => {
-  const catalogItems: MenuItem[] = [
-    { title: 'Диваны', href: '/catalog/sofas', icon: 'mdi:sofa' },
-    { title: 'Стулья', href: '/catalog/chairs', icon: 'mdi:chair' },
-    { title: 'Столы', href: '/catalog/tables', icon: 'mdi:table-furniture' },
-    { title: 'Кровати', href: '/catalog/beds', icon: 'mdi:bed' },
-    { title: 'Шкафы', href: '/catalog/wardrobes', icon: 'mdi:wardrobe' },
-  ];
-
   const infoItems: MenuItem[] = [
     {
       title: 'Условия доставки',
@@ -44,14 +36,12 @@ export const useMenu = () => {
   ];
 
   const menuSections: MenuSection[] = [
-    { title: 'Каталог', items: catalogItems },
     { title: 'Информация', items: infoItems },
     { title: 'Контакты', items: contactItems },
   ];
 
   return {
     menuSections,
-    catalogItems,
     infoItems,
     contactItems,
   };

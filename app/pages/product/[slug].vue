@@ -95,6 +95,8 @@
       },
     ],
   });
+
+  const { add } = useCart();
 </script>
 
 <template>
@@ -128,7 +130,10 @@
       </UiBreadcrumb>
 
       <!-- Первый блок: Слайдер + Информация о товаре -->
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+      <div
+        v-if="product"
+        class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12"
+      >
         <!-- Слайдер с фото -->
         <div class="space-y-4">
           <UiCarousel
@@ -213,6 +218,7 @@
               size="lg"
               class="w-full"
               :disabled="!product?.in_stock"
+              @click="add(product.id)"
             >
               <Icon
                 name="mdi:cart-plus"
@@ -328,7 +334,7 @@
     </section>
 
     <WidgetShowcase
-      v-if="product"
+      v-if="product?.related_products.length"
       item-key="id"
       :items="product.related_products"
       slider-title="Похожие товары"
@@ -340,7 +346,7 @@
     </WidgetShowcase>
 
     <WidgetShowcase
-      v-if="product"
+      v-if="product?.related_by_color.length"
       item-key="id"
       :items="product.related_by_color"
       slider-title="Связанные по цвету"

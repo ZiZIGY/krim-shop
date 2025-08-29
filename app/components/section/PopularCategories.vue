@@ -1,74 +1,13 @@
 <script setup lang="ts">
   import { motion } from 'motion-v';
 
-  interface Category {
-    id: string;
-    name: string;
-    description: string;
-    image: string;
-    productCount: number;
-    slug: string;
-  }
+  const config = useRuntimeConfig();
 
-  interface Props {
-    title?: string;
-    description?: string;
-    categories?: Category[];
-  }
-
-  withDefaults(defineProps<Props>(), {
-    title: 'Популярные разделы',
-    description: 'Выберите интересующий вас раздел мебели',
-    categories: () => [
-      {
-        id: '1',
-        name: 'Диваны',
-        description: 'Мягкая мебель для гостиной',
-        image: '/razdel.jpg',
-        productCount: 45,
-        slug: 'sofas',
-      },
-      {
-        id: '2',
-        name: 'Стулья',
-        description: 'Стулья для кухни и столовой',
-        image: '/razdel.jpg',
-        productCount: 23,
-        slug: 'chairs',
-      },
-      {
-        id: '3',
-        name: 'Столы',
-        description: 'Обеденные и рабочие столы',
-        image: '/razdel.jpg',
-        productCount: 31,
-        slug: 'tables',
-      },
-      {
-        id: '4',
-        name: 'Кровати',
-        description: 'Спальная мебель',
-        image: '/razdel.jpg',
-        productCount: 12,
-        slug: 'beds',
-      },
-      {
-        id: '5',
-        name: 'Шкафы',
-        description: 'Системы хранения',
-        image: '/razdel.jpg',
-        productCount: 18,
-        slug: 'wardrobes',
-      },
-      {
-        id: '6',
-        name: 'Тумбы',
-        description: 'Прикроватные тумбы и комоды',
-        image: '/razdel.jpg',
-        productCount: 25,
-        slug: 'nightstands',
-      },
-    ],
+  const { data } = await useFetch<ApiCategoriesResponse>('/api/categories/', {
+    baseURL: config.public.apiUrl,
+    query: {
+      is_featured: true,
+    },
   });
 </script>
 
@@ -82,21 +21,16 @@
         :transition="{ duration: 0.6 }"
         class="text-center mb-12"
       >
-        <h2 class="text-3xl font-bold mb-4">
-          {{ title }}
-        </h2>
-        <p
-          v-if="description"
-          class="text-muted-foreground max-w-2xl mx-auto"
-        >
-          {{ description }}
+        <h2 class="text-3xl font-bold mb-4"> Популярные разделы </h2>
+        <p class="text-muted-foreground max-w-2xl mx-auto">
+          Выберите интересующий вас раздел мебели
         </p>
       </motion.div>
 
       <!-- Сетка категорий -->
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <motion.div
-          v-for="(category, index) in categories"
+          v-for="(category, index) in data?.results"
           :key="category.id"
           :initial="{ opacity: 0, y: 20 }"
           :while-in-view="{ opacity: 1, y: 0 }"
@@ -114,7 +48,7 @@
               <!-- Изображение -->
               <div class="relative h-48 overflow-hidden">
                 <NuxtImg
-                  :src="category.image"
+                  :src="'/razdel.jpg'"
                   :alt="category.name"
                   class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                 />
@@ -122,11 +56,6 @@
                 <div
                   class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"
                 />
-
-                <!-- Количество товаров -->
-                <UiBadge class="absolute top-3 right-3">
-                  {{ category.productCount }} товаров
-                </UiBadge>
               </div>
 
               <!-- Контент -->
@@ -136,9 +65,6 @@
                 >
                   {{ category.name }}
                 </UiCardTitle>
-                <UiCardDescription class="text-sm mb-4">
-                  {{ category.description }}
-                </UiCardDescription>
 
                 <!-- Кнопка -->
                 <div class="flex items-center justify-between">

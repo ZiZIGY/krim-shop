@@ -15,13 +15,24 @@
       },
     ],
   });
+
+  const { data: tags } = await useFetch<Tag[]>('/api/tags', {
+    query: {
+      home: 1,
+    },
+    baseURL: config.public.apiUrl,
+  });
 </script>
 
 <template>
   <div>
     <SectionHero />
-    <SectionNewProducts />
-    <SectionPopularProducts />
+    <SectionHomeProducts
+      v-for="tag in tags"
+      :key="tag.id"
+      :tag-name="tag.name"
+      :tag-slug="tag.slug"
+    />
     <SectionPopularCategories />
   </div>
 </template>

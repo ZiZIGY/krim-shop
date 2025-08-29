@@ -29,21 +29,30 @@
 </script>
 
 <template>
-  <UiNavigationMenu>
-    <UiNavigationMenuList>
-      <UiNavigationMenuItem
+  <UiDropdownMenu>
+    <UiDropdownMenuTrigger as-child>
+      <UiButton
+        variant="ghost"
+        class="gap-2 text-sm"
+      >
+        Покупателям
+        <Icon
+          name="mdi:chevron-down"
+          class="h-4 w-4"
+        />
+      </UiButton>
+    </UiDropdownMenuTrigger>
+
+    <UiDropdownMenuContent class="w-48">
+      <NuxtLink
         v-for="item in menuItems"
         :key="item.id"
+        :to="item.link"
       >
-        <UiNavigationMenuLink as-child>
-          <NuxtLink
-            :to="item.link"
-            class="text-sm text-muted-foreground hover:text-foreground transition-colors"
-          >
-            {{ item.title }}
-          </NuxtLink>
-        </UiNavigationMenuLink>
-      </UiNavigationMenuItem>
-    </UiNavigationMenuList>
-  </UiNavigationMenu>
+        <UiDropdownMenuItem>
+          {{ item.title }}
+        </UiDropdownMenuItem>
+      </NuxtLink>
+    </UiDropdownMenuContent>
+  </UiDropdownMenu>
 </template>

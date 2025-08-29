@@ -3,7 +3,7 @@
   import { motion } from 'motion-v';
 
   interface Props<T> {
-    items: T[];
+    items?: T[];
     itemKey: keyof T;
     sliderTitle?: string;
     sliderDescription?: string;

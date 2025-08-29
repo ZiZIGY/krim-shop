@@ -129,8 +129,8 @@
             >
               <div class="flex items-center space-x-2">
                 <UiRadioGroupItem
-                  value="courier"
                   id="courier"
+                  value="courier"
                 />
                 <UiLabel
                   for="courier"
@@ -140,23 +140,6 @@
                     <span>Курьерская доставка</span>
                     <span class="text-sm text-muted-foreground ml-2"
                       >2-3 дня</span
-                    >
-                  </div>
-                </UiLabel>
-              </div>
-              <div class="flex items-center space-x-2">
-                <UiRadioGroupItem
-                  value="pickup"
-                  id="pickup"
-                />
-                <UiLabel
-                  for="pickup"
-                  class="flex-1"
-                >
-                  <div class="flex justify-between items-center">
-                    <span>Самовывоз</span>
-                    <span class="text-sm text-muted-foreground ml-2"
-                      >Бесплатно</span
                     >
                   </div>
                 </UiLabel>
@@ -177,17 +160,24 @@
             >
               <div class="flex items-center space-x-2">
                 <UiRadioGroupItem
-                  value="card"
                   id="card"
+                  value="card"
                 />
                 <UiLabel for="card">Банковская карта</UiLabel>
               </div>
               <div class="flex items-center space-x-2">
                 <UiRadioGroupItem
-                  value="cash"
                   id="cash"
+                  value="cash"
                 />
                 <UiLabel for="cash">Наличными при получении</UiLabel>
+              </div>
+              <div class="flex items-center space-x-2">
+                <UiRadioGroupItem
+                  id="spb"
+                  value="spb"
+                />
+                <UiLabel for="spb">СПБ</UiLabel>
               </div>
             </UiRadioGroup>
           </UiCardContent>

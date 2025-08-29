@@ -1,3 +1,27 @@
+<script setup lang="ts">
+  import { motion } from 'motion-v';
+
+  const config = useRuntimeConfig();
+  // SEO
+  useHead({
+    title: `Условия оплаты - ${config.public.siteName}`,
+    meta: [
+      {
+        name: `description`,
+        content: `Удобные и безопасные способы оплаты мебели. Банковские карты, электронные кошельки, наложенный платеж. SSL-шифрование и PCI DSS.`,
+      },
+      {
+        property: `og:title`,
+        content: `Условия оплаты - ${config.public.siteName}`,
+      },
+      {
+        property: `og:description`,
+        content: `Удобные и безопасные способы оплаты мебели`,
+      },
+    ],
+  });
+</script>
+
 <template>
   <div class="container mx-auto px-4 py-8">
     <!-- Хлебные крошки -->
@@ -42,7 +66,7 @@
       >
         <h2 class="text-2xl font-semibold">Способы оплаты</h2>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
           <!-- Банковские карты -->
           <UiCard class="p-6">
             <div class="flex items-center gap-3 mb-4">
@@ -67,30 +91,6 @@
               <Icon
                 name="mdi:credit-card"
                 class="h-8 w-12 text-green-600"
-              />
-            </div>
-          </UiCard>
-
-          <!-- Электронные кошельки -->
-          <UiCard class="p-6">
-            <div class="flex items-center gap-3 mb-4">
-              <Icon
-                name="mdi:wallet"
-                class="h-6 w-6 text-primary"
-              />
-              <h3 class="text-lg font-semibold">Электронные кошельки</h3>
-            </div>
-            <p class="text-muted-foreground mb-4">
-              Оплата через Яндекс.Деньги, QIWI, WebMoney и другие системы.
-            </p>
-            <div class="flex gap-2">
-              <Icon
-                name="mdi:wallet"
-                class="h-8 w-8 text-yellow-600"
-              />
-              <Icon
-                name="mdi:wallet"
-                class="h-8 w-8 text-orange-600"
               />
             </div>
           </UiCard>
@@ -344,29 +344,5 @@
     </motion.div>
   </div>
 </template>
-
-<script setup lang="ts">
-  import { motion } from 'motion-v';
-
-  const config = useRuntimeConfig();
-  // SEO
-  useHead({
-    title: `Условия оплаты - ${config.public.siteName}`,
-    meta: [
-      {
-        name: `description`,
-        content: `Удобные и безопасные способы оплаты мебели. Банковские карты, электронные кошельки, наложенный платеж. SSL-шифрование и PCI DSS.`,
-      },
-      {
-        property: `og:title`,
-        content: `Условия оплаты - ${config.public.siteName}`,
-      },
-      {
-        property: `og:description`,
-        content: `Удобные и безопасные способы оплаты мебели`,
-      },
-    ],
-  });
-</script>
 
 <style scoped></style>

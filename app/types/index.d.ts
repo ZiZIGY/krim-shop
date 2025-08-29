@@ -20,6 +20,31 @@ declare interface Product {
   created_at: string;
 }
 
+declare interface ApiCategoriesResponse {
+  count: number;
+  next: null;
+  previous: null;
+  results: Category[];
+}
+
+declare interface Category {
+  id: number;
+  name: string;
+  slug: string;
+  parent: null;
+  parent_slug: null;
+  is_featured: boolean;
+  level: number;
+  children: [];
+}
+declare interface Tag {
+  id: number;
+  name: string;
+  slug: string;
+  show_on_home: boolean;
+  product_count: number;
+}
+
 declare interface FilterOption {
   id: number;
   value: string;
@@ -82,7 +107,7 @@ declare interface FilterConfig {
 
 // Значения фильтров в едином формате
 
-declare interface CatalogResponse {
+declare interface ApiProductsResponse {
   count: number;
   next: string;
   previous: null;
