@@ -6,15 +6,18 @@
 
   const routeQuery = computed(() => route.query);
   const currentPage = shallowRef<number>(Number(route.query.page) || 1);
+  const fullQuery = computed(() => {
+    return {
+      category: route.params.slug,
+      ...routeQuery.value,
+    };
+  });
 
   const { data, status } = await useFetch<ApiProductsResponse>(
-    '/api/products/',
+    `/api/products/`,
     {
       baseURL: config.public.apiUrl,
-      query: {
-        category: route.params.slug,
-        ...routeQuery.value,
-      },
+      query: fullQuery,
     }
   );
 

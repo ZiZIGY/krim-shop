@@ -34,7 +34,6 @@
     Object.entries(filters).forEach(([key, value]) => {
       if (value === undefined || value === null) return;
       if (Array.isArray(value)) {
-        console.log(value);
         if (value.length > 0) query[key] = value.map(cast);
       } else {
         query[key] = cast(value);
