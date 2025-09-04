@@ -31,8 +31,6 @@
 
 <template>
   <div class="space-y-6">
-    <!-- Заголовок и сортировка -->
-
     <div
       class="grid gap-6 transition-all duration-300 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4"
     >
