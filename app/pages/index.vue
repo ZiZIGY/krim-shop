@@ -33,6 +33,7 @@
       :tag-name="tag.name"
       :tag-slug="tag.slug"
     />
+    <SectionForm />
     <SectionPopularCategories />
   </div>
 </template>
