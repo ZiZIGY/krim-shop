@@ -8,7 +8,7 @@
       {
         name: 'description',
         content:
-          'Условия и способы доставки товаров. Курьерская доставка, самовывоз, почта России.',
+          'Условия и способы доставки товаров. Курьерская доставка, самовывоз, почта России, транспортные компании СДЭК, ПЭК, Деловые линии.',
       },
     ],
   });
@@ -60,11 +60,33 @@
           :initial="{ opacity: 0, y: 20 }"
           :while-in-view="{ opacity: 1, y: 0 }"
           :in-view-options="{ once: true }"
-          :transition="{ duration: 0.6, delay: 0.2 }"
+          :transition="{ duration: 0.6 }"
         >
           <h2 class="text-3xl font-bold mb-8">Способы доставки</h2>
 
           <div class="space-y-8">
+            <!-- Доставка транспортными компаниями -->
+            <div>
+              <h3 class="text-2xl font-semibold mb-4"
+                >Доставка транспортными компаниями</h3
+              >
+              <p class="text-lg text-muted-foreground mb-4">
+                Осуществляем доставку в любой регион РФ удобными для вас
+                транспортными компаниями:
+              </p>
+              <ul class="space-y-2 text-lg text-muted-foreground ml-6 mb-4">
+                <li>• СДЭК</li>
+                <li>• ПЭК</li>
+                <li>• Деловые линии</li>
+              </ul>
+              <p class="text-lg text-muted-foreground mb-4">
+                Доставка товара до Транспортных компаний для дальнейшей
+                транспортировки в любой регион России осуществляется
+                <strong>бесплатно</strong> при любой сумме заказа. Стоимость
+                услуг транспортных компаний оплачивается отдельно.
+              </p>
+            </div>
+
             <div>
               <h3 class="text-2xl font-semibold mb-4">Курьерская доставка</h3>
               <p class="text-lg text-muted-foreground mb-4">
@@ -106,7 +128,38 @@
           :initial="{ opacity: 0, y: 20 }"
           :while-in-view="{ opacity: 1, y: 0 }"
           :in-view-options="{ once: true }"
-          :transition="{ duration: 0.6, delay: 0.6 }"
+          :transition="{ duration: 0.6 }"
+          class="mt-16"
+        >
+          <h2 class="text-3xl font-bold mb-8">Правила доставки</h2>
+
+          <div class="space-y-6">
+            <div class="bg-muted p-6 rounded-lg">
+              <h3 class="text-xl font-semibold mb-4">Общие условия</h3>
+              <ul class="space-y-2 text-lg text-muted-foreground">
+                <li
+                  >• Доставка осуществляется до «подъезда» и не включает в себя
+                  услуги по разгрузке и подъему товара.</li
+                >
+                <li
+                  >• Грузополучатель должен обеспечить возможность
+                  беспрепятственного подъезда транспортного средства к месту
+                  разгрузки.</li
+                >
+                <li
+                  >• При получении заказа обязательно проверьте комплектность и
+                  целостность товара.</li
+                >
+              </ul>
+            </div>
+          </div>
+        </motion.div>
+
+        <motion.div
+          :initial="{ opacity: 0, y: 20 }"
+          :while-in-view="{ opacity: 1, y: 0 }"
+          :in-view-options="{ once: true }"
+          :transition="{ duration: 0.6 }"
           class="mt-16"
         >
           <h2 class="text-3xl font-bold mb-8">Условия доставки</h2>
@@ -158,7 +211,7 @@
           :initial="{ opacity: 0, y: 20 }"
           :while-in-view="{ opacity: 1, y: 0 }"
           :in-view-options="{ once: true }"
-          :transition="{ duration: 0.6, delay: 0.8 }"
+          :transition="{ duration: 0.6 }"
           class="mt-16"
         >
           <h2
@@ -189,6 +242,14 @@
                   >• Курьер не обязан поднимать товар выше 2-го этажа без
                   лифта</li
                 >
+                <li
+                  >• Доставка до транспортных компаний осуществляется бесплатно
+                  при любой сумме заказа</li
+                >
+                <li
+                  >• Стоимость услуг транспортных компаний оплачивается
+                  покупателем отдельно</li
+                >
               </ul>
             </UiAlertDescription>
           </UiAlert>
@@ -198,7 +259,7 @@
           :initial="{ opacity: 0, y: 20 }"
           :while-in-view="{ opacity: 1, y: 0 }"
           :in-view-options="{ once: true }"
-          :transition="{ duration: 0.6, delay: 1.0 }"
+          :transition="{ duration: 0.6 }"
           class="mt-16"
         >
           <h2 class="text-3xl font-bold mb-8">Контакты для вопросов</h2>
@@ -208,21 +269,21 @@
           <div class="space-y-4">
             <div class="flex justify-between items-center py-3 border-b">
               <span class="font-medium">Телефон</span>
-              <span class="text-muted-foreground">{{
-                $config.public.phoneNumber
-              }}</span>
+              <span class="text-muted-foreground">
+                {{ $config.public.phoneNumber }}
+              </span>
             </div>
             <div class="flex justify-between items-center py-3 border-b">
               <span class="font-medium">Email</span>
-              <span class="text-muted-foreground">{{
-                $config.public.email
-              }}</span>
+              <span class="text-muted-foreground">
+                {{ $config.public.email }}
+              </span>
             </div>
             <div class="flex justify-between items-center py-3">
               <span class="font-medium">Время работы</span>
-              <span class="text-muted-foreground">{{
-                $config.public.deliveryTime
-              }}</span>
+              <span class="text-muted-foreground">
+                {{ $config.public.deliveryTime }}
+              </span>
             </div>
           </div>
         </motion.div>
@@ -230,33 +291,3 @@
     </section>
   </div>
 </template>
-
-<style>
-  .prose h2 {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-top: 2rem;
-    margin-bottom: 1rem;
-  }
-
-  .prose h3 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin-top: 1.5rem;
-    margin-bottom: 0.75rem;
-  }
-
-  .prose p {
-    margin-bottom: 1rem;
-    color: hsl(var(--muted-foreground));
-  }
-
-  .prose ul {
-    margin-bottom: 1rem;
-  }
-
-  .prose ul li {
-    margin-bottom: 0.5rem;
-    color: hsl(var(--muted-foreground));
-  }
-</style>

@@ -40,6 +40,9 @@ export default defineNuxtConfig({
       address: process.env.ADDRESS,
       email: process.env.EMAIL,
       apiUrl: process.env.API_URL,
+      ogrnip: process.env.OGRNIP,
+      inn: process.env.INN,
+      face: process.env.FACE,
     },
   },
 
