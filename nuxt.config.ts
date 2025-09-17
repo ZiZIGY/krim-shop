@@ -49,8 +49,9 @@ export default defineNuxtConfig({
   },
 
   icon: {
+    provider: 'none',
     serverBundle: {
-      collections: ['uil', 'mdi'],
+      collections: ['uil', 'mdi', 'bx'],
     },
   },
 

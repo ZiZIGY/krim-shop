@@ -98,7 +98,6 @@
   });
 
   const onSubmit = handleSubmit((values) => {
-    // Пока никуда не отправляем
     console.log('feedback form values', values);
   });
 </script>
