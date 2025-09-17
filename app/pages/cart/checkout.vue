@@ -121,21 +121,13 @@
             <UiCardTitle>Контактные данные</UiCardTitle>
           </UiCardHeader>
           <UiCardContent class="space-y-4">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="space-y-2">
-                <UiLabel for="firstName">Имя *</UiLabel>
-                <UiInput
-                  id="firstName"
-                  placeholder="Введите имя"
-                />
-              </div>
-              <div class="space-y-2">
-                <UiLabel for="lastName">Фамилия *</UiLabel>
-                <UiInput
-                  id="lastName"
-                  placeholder="Введите фамилию"
-                />
-              </div>
+            <div class="space-y-2">
+              <UiLabel for="firstName">ФИО *</UiLabel>
+              <UiInput
+                id="firstName"
+                type="text"
+                placeholder="Введите ФИО"
+              />
             </div>
             <div class="space-y-2">
               <UiLabel for="email">Email *</UiLabel>
@@ -176,53 +168,20 @@
                 placeholder="Улица, дом, квартира"
               />
             </div>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div class="space-y-2">
-                <UiLabel for="postalCode">Индекс</UiLabel>
-                <UiInput
-                  id="postalCode"
-                  placeholder="123456"
-                />
-              </div>
-              <div class="space-y-2">
-                <UiLabel for="comment">Комментарий к заказу</UiLabel>
-                <UiInput
-                  id="comment"
-                  placeholder="Дополнительная информация"
-                />
-              </div>
+            <div class="space-y-2">
+              <UiLabel for="postalCode">Индекс</UiLabel>
+              <UiInput
+                id="postalCode"
+                placeholder="123456"
+              />
             </div>
-          </UiCardContent>
-        </UiCard>
-
-        <!-- Способ доставки -->
-        <UiCard>
-          <UiCardHeader>
-            <UiCardTitle>Способ доставки</UiCardTitle>
-          </UiCardHeader>
-          <UiCardContent>
-            <UiRadioGroup
-              value="courier"
-              class="space-y-3"
-            >
-              <div class="flex items-center space-x-2">
-                <UiRadioGroupItem
-                  id="courier"
-                  value="courier"
-                />
-                <UiLabel
-                  for="courier"
-                  class="flex-1"
-                >
-                  <div class="flex justify-between items-center">
-                    <span>Курьерская доставка</span>
-                    <span class="text-sm text-muted-foreground ml-2"
-                      >2-3 дня</span
-                    >
-                  </div>
-                </UiLabel>
-              </div>
-            </UiRadioGroup>
+            <div class="space-y-2">
+              <UiLabel for="comment">Комментарий к заказу</UiLabel>
+              <UiTextarea
+                id="comment"
+                placeholder="Дополнительная информация"
+              />
+            </div>
           </UiCardContent>
         </UiCard>
 
@@ -241,7 +200,7 @@
                   id="card"
                   value="card"
                 />
-                <UiLabel for="card">Банковская карта</UiLabel>
+                <UiLabel for="card">Онлайн оплата</UiLabel>
               </div>
               <div class="flex items-center space-x-2">
                 <UiRadioGroupItem
@@ -250,19 +209,11 @@
                 />
                 <UiLabel for="cash">Наличными при получении</UiLabel>
               </div>
-              <div class="flex items-center space-x-2">
-                <UiRadioGroupItem
-                  id="spb"
-                  value="spb"
-                />
-                <UiLabel for="spb">СПБ</UiLabel>
-              </div>
             </UiRadioGroup>
           </UiCardContent>
         </UiCard>
       </div>
 
-      <!-- Итоги заказа -->
       <div class="lg:col-span-1">
         <UiCard class="sticky top-8">
           <UiCardHeader>
@@ -297,9 +248,13 @@
                 </div>
                 <div class="flex justify-between text-sm">
                   <span>Доставка</span>
-                  <span>{{
-                    deliveryCost === 0 ? `Бесплатно` : formatPrice(deliveryCost)
-                  }}</span>
+                  <span>
+                    {{
+                      deliveryCost === 0
+                        ? `Бесплатно`
+                        : formatPrice(deliveryCost)
+                    }}
+                  </span>
                 </div>
                 <div class="border-t pt-2">
                   <div class="flex justify-between font-semibold">
