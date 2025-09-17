@@ -1,3 +1,81 @@
+<script setup lang="ts">
+  // Тестовые данные корзины
+  const cartItems = shallowRef([
+    {
+      id: `1`,
+      name: `Диван "Комфорт"`,
+      price: 45000,
+      quantity: 1,
+    },
+    {
+      id: `2`,
+      name: `Стол обеденный "Классик"`,
+      price: 18000,
+      quantity: 1,
+    },
+    {
+      id: `3`,
+      name: `Кресло "Уют"`,
+      price: 22000,
+      quantity: 2,
+    },
+  ]);
+
+  // Вычисляемые свойства
+  const subtotal = computed(() => {
+    return cartItems.value.reduce(
+      (sum, item) => sum + item.price * item.quantity,
+      0
+    );
+  });
+
+  const totalItems = computed(() => {
+    return cartItems.value.reduce((sum, item) => sum + item.quantity, 0);
+  });
+
+  const deliveryCost = computed(() => {
+    return subtotal.value > 50000 ? 0 : 2000;
+  });
+
+  const total = computed(() => {
+    return subtotal.value + deliveryCost.value;
+  });
+
+  const formatPrice = (price: number) => {
+    return new Intl.NumberFormat(`ru-RU`, {
+      style: `currency`,
+      currency: `RUB`,
+      minimumFractionDigits: 0,
+    }).format(price);
+  };
+
+  const placeOrder = () => {
+    // Здесь будет логика оформления заказа
+    console.log(`Оформление заказа...`);
+  };
+
+  // SEO
+  const config = useRuntimeConfig();
+
+  useHead({
+    title: `Оформление заказа - ${config.public.siteName}`,
+    meta: [
+      {
+        name: `description`,
+        content: `Оформление заказа. Заполните данные для доставки и оплаты.`,
+      },
+      {
+        property: `og:title`,
+        content: `Оформление заказа - ${config.public.siteName}`,
+      },
+      {
+        property: `og:description`,
+        content: `Оформление заказа. Заполните данные для доставки и оплаты.`,
+      },
+    ],
+  });
+</script>
+
 <template>
   <div class="container mx-auto px-4 py-8">
     <!-- Хлебные крошки -->
@@ -268,83 +346,5 @@
     </div>
   </div>
 </template>
-
-<script setup lang="ts">
-  // Тестовые данные корзины
-  const cartItems = shallowRef([
-    {
-      id: `1`,
-      name: `Диван "Комфорт"`,
-      price: 45000,
-      quantity: 1,
-    },
-    {
-      id: `2`,
-      name: `Стол обеденный "Классик"`,
-      price: 18000,
-      quantity: 1,
-    },
-    {
-      id: `3`,
-      name: `Кресло "Уют"`,
-      price: 22000,
-      quantity: 2,
-    },
-  ]);
-
-  // Вычисляемые свойства
-  const subtotal = computed(() => {
-    return cartItems.value.reduce(
-      (sum, item) => sum + item.price * item.quantity,
-      0
-    );
-  });
-
-  const totalItems = computed(() => {
-    return cartItems.value.reduce((sum, item) => sum + item.quantity, 0);
-  });
-
-  const deliveryCost = computed(() => {
-    return subtotal.value > 50000 ? 0 : 2000;
-  });
-
-  const total = computed(() => {
-    return subtotal.value + deliveryCost.value;
-  });
-
-  const formatPrice = (price: number) => {
-    return new Intl.NumberFormat(`ru-RU`, {
-      style: `currency`,
-      currency: `RUB`,
-      minimumFractionDigits: 0,
-    }).format(price);
-  };
-
-  const placeOrder = () => {
-    // Здесь будет логика оформления заказа
-    console.log(`Оформление заказа...`);
-  };
-
-  // SEO
-  const config = useRuntimeConfig();
-
-  useHead({
-    title: `Оформление заказа - ${config.public.siteName}`,
-    meta: [
-      {
-        name: `description`,
-        content: `Оформление заказа. Заполните данные для доставки и оплаты.`,
-      },
-      {
-        property: `og:title`,
-        content: `Оформление заказа - ${config.public.siteName}`,
-      },
-      {
-        property: `og:description`,
-        content: `Оформление заказа. Заполните данные для доставки и оплаты.`,
-      },
-    ],
-  });
-</script>
 
 <style scoped></style>

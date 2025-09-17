@@ -49,7 +49,7 @@ export default defineNuxtConfig({
   },
 
   icon: {
-    provider: 'none',
+    provider: 'server',
     serverBundle: {
       collections: ['uil', 'mdi', 'bx'],
     },
