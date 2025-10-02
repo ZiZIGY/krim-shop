@@ -1,3 +1,42 @@
+<script lang="ts" setup>
+  import { z } from 'zod';
+  import { toTypedSchema } from '@vee-validate/zod';
+  import { useForm } from 'vee-validate';
+
+  const config = useRuntimeConfig();
+
+  const schema = toTypedSchema(
+    z.object({
+      name: z.string({ message: 'Введите имя' }).min(2, 'Минимум 2 символа'),
+      phone: z
+        .string({ message: 'Введите номер телефона' })
+        .regex(/^\+?\d[\d\s\-()]{9,}$/u, 'Некорректный номер'),
+    })
+  );
+
+  const { isFieldDirty, handleSubmit, values } = useForm({
+    validationSchema: schema,
+    initialValues: { name: '', phone: '' },
+  });
+
+  const {
+    execute,
+    data: response,
+    pending,
+    error,
+  } = useFetch('/api/contact-requests/', {
+    baseURL: config.public.apiUrl,
+    method: 'post',
+    immediate: false,
+    body: values,
+    watch: false,
+  });
+
+  const onSubmit = handleSubmit(async () => {
+    await execute();
+  });
+</script>
+
 <template>
   <section class="relative parallax-section">
     <div class="container mx-auto px-4 py-20 flex items-center justify-center">
@@ -14,7 +53,18 @@
             подобрать мебель под ваш интерьер.
           </p>
         </div>
+        <div
+          v-if="response"
+          class="text-center py-10"
+        >
+          <div class="text-lg text-white font-semibold mb-2">Спасибо!</div>
+          <div class="text-white/80"
+            >Ваша заявка отправлена. Мы свяжемся с вами в ближайшее время и
+            отправим промокод.</div
+          >
+        </div>
         <form
+          v-else
           class="space-y-6"
           @submit="onSubmit"
         >
@@ -24,9 +74,9 @@
             :validate-on-blur="!isFieldDirty"
           >
             <UiFormItem>
-              <UiFormLabel class="text-sm font-medium text-white/90"
-                >Имя</UiFormLabel
-              >
+              <UiFormLabel class="text-sm font-medium text-white/90">
+                Имя
+              </UiFormLabel>
               <UiFormControl>
                 <UiInput
                   type="text"
@@ -45,9 +95,9 @@
             :validate-on-blur="!isFieldDirty"
           >
             <UiFormItem>
-              <UiFormLabel class="text-sm font-medium text-white/90"
-                >Телефон</UiFormLabel
-              >
+              <UiFormLabel class="text-sm font-medium text-white/90">
+                Телефон
+              </UiFormLabel>
               <UiFormControl>
                 <UiInput
                   type="tel"
@@ -64,9 +114,17 @@
           <UiButton
             type="submit"
             class="w-full h-11 text-base font-semibold"
+            :disabled="pending"
           >
-            Отправить
+            <span v-if="pending">Отправка...</span>
+            <span v-else>Отправить</span>
           </UiButton>
+
+          <p
+            v-if="error"
+            class="text-xs text-red-400 text-center"
+            >{{ error }}</p
+          >
 
           <p class="text-xs text-white/60 text-center">
             Отправляя форму, вы соглашаетесь с обработкой персональных данных.
@@ -78,31 +136,7 @@
   </section>
 </template>
 
-<script lang="ts" setup>
-  import { z } from 'zod';
-  import { toTypedSchema } from '@vee-validate/zod';
-  import { useForm } from 'vee-validate';
-
-  const schema = toTypedSchema(
-    z.object({
-      name: z.string({ message: 'Введите имя' }).min(2, 'Минимум 2 символа'),
-      phone: z
-        .string({ message: 'Введите номер телефона' })
-        .regex(/^\+?\d[\d\s\-()]{9,}$/u, 'Некорректный номер'),
-    })
-  );
-
-  const { isFieldDirty, handleSubmit } = useForm({
-    validationSchema: schema,
-    initialValues: { name: '', phone: '' },
-  });
-
-  const onSubmit = handleSubmit((values) => {
-    console.log('feedback form values', values);
-  });
-</script>
-
-<style>
+<style scoped>
   .parallax-section {
     background-image: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
       url('/form-bg.jpg');

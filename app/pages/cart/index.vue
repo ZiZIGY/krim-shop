@@ -1,5 +1,4 @@
 <script setup lang="ts">
-  // SEO
   const config = useRuntimeConfig();
   useHead({
     title: `Корзина - ${config.public.siteName}`,
@@ -19,7 +18,6 @@
 
 <template>
   <div class="container mx-auto px-4 py-8">
-    <!-- Хлебные крошки -->
     <UiBreadcrumb class="mb-8">
       <UiBreadcrumbList>
         <UiBreadcrumbItem>
@@ -36,7 +34,6 @@
       </UiBreadcrumbList>
     </UiBreadcrumb>
 
-    <!-- Модуль корзины -->
     <ModuleCart />
   </div>
 </template>
