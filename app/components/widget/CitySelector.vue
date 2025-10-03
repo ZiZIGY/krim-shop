@@ -1,32 +1,5 @@
 <script setup lang="ts">
-  interface City {
-    id: number;
-    name: string;
-    slug: string;
-    base_cost: string;
-    free_threshold: string;
-    delivery_days_min: number;
-    delivery_days_max: number;
-    is_active: boolean;
-    order: number;
-    base_cost_effective: number;
-    discount_amount: number;
-    final_cost: number;
-    applied_discount: null;
-  }
-
-  const config = useRuntimeConfig();
-
-  const { data: cities } = useFetch<City[]>(`/api/shipping/regions/`, {
-    baseURL: config.public.apiUrl,
-  });
-
-  const selectedCity = useLocalStorage<number>(
-    'selectedCity',
-    cities.value?.[0]?.id ?? 0
-  );
-
-  const handleCitySelect = (city: City) => (selectedCity.value = city.id);
+  const { cities, selectedCity, handleCitySelect } = useRegion();
 </script>
 
 <template>
@@ -64,7 +37,7 @@
         v-for="city in cities"
         :key="city.id"
         :class="{ 'bg-accent': selectedCity === city.id }"
-        @click="handleCitySelect(city)"
+        @click="handleCitySelect(city.id)"
       >
         <div class="flex w-full items-center justify-between">
           <span>{{ city.name }}</span>

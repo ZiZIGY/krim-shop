@@ -103,8 +103,8 @@
               filters[`${key}_max`] || range.max,
             ]"
             @update:model-value="
-              (event) => {
-                const [min, max] = event as [number, number];
+              (event: [number, number]) => {
+                const [min, max] = event
 
                 filters[`${key}_min`] = min;
                 filters[`${key}_max`] = max;
@@ -162,7 +162,7 @@
                 :id="`option-${option.id}`"
                 :model-value="(filters[`attr_${key}`] as number[])?.includes(option.id)"
                 @update:model-value="
-                  (toggled) => {
+                  (toggled: boolean) => {
                     let arr = (filters[`attr_${key}`]
                       ? filters[`attr_${key}`]
                       : []) as number[];
@@ -211,7 +211,7 @@
                 :id="`option-${option.id}`"
                 :model-value="(filters[`attr_${key}`] as number[])?.includes(option.id)"
                 @update:model-value="
-                  (toggled) => {
+                  (toggled: boolean) => {
                     let arr = (filters[`attr_${key}`]
                       ? filters[`attr_${key}`]
                       : []) as number[];
@@ -270,7 +270,7 @@
                 :id="`option-${option.id}`"
                 :model-value="(filters['color'] as number[])?.includes(option.id)"
                 @update:model-value="
-                  (toggled) => {
+                  (toggled: boolean) => {
                     let arr = (filters[`color`]
                       ? filters[`color`]
                       : []) as number[];

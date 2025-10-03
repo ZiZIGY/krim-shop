@@ -9,7 +9,8 @@
     'proceed-to-checkout': [];
   }>();
 
-  // Вычисляемые свойства
+  const { deliveryCost: calculateDeliveryCost, deliveryInfo } = useRegion();
+
   const subtotal = computed(() => {
     return props.items.reduce(
       (sum, item) => sum + Number(item.product.price) * item.quantity,
@@ -22,7 +23,7 @@
   });
 
   const deliveryCost = computed(() => {
-    return subtotal.value > 50000 ? 0 : 2000; // Бесплатная доставка от 50k
+    return calculateDeliveryCost.value(subtotal.value);
   });
 
   const total = computed(() => {
@@ -44,9 +45,7 @@
       <div class="mb-4">
         <h3 class="text-lg font-semibold">Итого</h3>
       </div>
-
       <div class="space-y-4">
-        <!-- Стоимость товаров -->
         <div class="flex justify-between">
           <span class="text-sm text-muted-foreground">
             Товары ({{ totalItems }})
@@ -54,15 +53,16 @@
           <span class="font-medium">{{ formatPrice(subtotal) }}</span>
         </div>
 
-        <!-- Доставка -->
         <div class="flex justify-between">
-          <span class="text-sm text-muted-foreground">Доставка</span>
-          <span class="font-medium">{{
-            deliveryCost === 0 ? 'Бесплатно' : formatPrice(deliveryCost)
-          }}</span>
+          <div>
+            <span class="text-sm text-muted-foreground">Доставка</span>
+            <div class="text-xs text-muted-foreground">{{ deliveryInfo }}</div>
+          </div>
+          <span class="font-medium">
+            {{ deliveryCost === 0 ? 'Бесплатно' : formatPrice(deliveryCost) }}
+          </span>
         </div>
 
-        <!-- Разделитель -->
         <div class="border-t pt-4">
           <div class="flex justify-between text-lg font-semibold">
             <span>Итого к оплате</span>
@@ -70,22 +70,19 @@
           </div>
         </div>
 
-        <!-- Кнопка оформления -->
-        <NuxtLink to="/cart/checkout">
-          <UiButton
-            class="w-full"
-            size="lg"
-            :disabled="items.length === 0"
-          >
-            Перейти к оформлению
-            <Icon
-              name="mdi:arrow-right"
-              class="h-4 w-4 ml-2"
-            />
-          </UiButton>
-        </NuxtLink>
+        <UiButton
+          class="w-full"
+          size="lg"
+          :disabled="items.length === 0"
+          @click="navigateTo('/cart/checkout')"
+        >
+          Перейти к оформлению
+          <Icon
+            name="mdi:arrow-right"
+            class="h-4 w-4 ml-2"
+          />
+        </UiButton>
 
-        <!-- Дополнительная информация -->
         <div class="text-xs text-muted-foreground space-y-2 mt-4">
           <div class="flex items-center gap-2">
             <Icon

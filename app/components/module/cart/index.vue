@@ -2,13 +2,30 @@
   const { items, set, remove } = useCart();
   const config = useRuntimeConfig();
 
-  const { data, pending } = useFetch<{ results: Product[]; missing: [] }>(
+  const { data } = useFetch<{ results: Product[]; missing: [] }>(
     '/api/products/by-ids',
     {
       query: { ids: items.value.map((i) => i.id).join(',') },
       baseURL: config.public.apiUrl,
       server: false,
     }
+  );
+
+  watch(
+    () => data.value,
+    (newData) => {
+      if (newData?.results && items.value.length > 0) {
+        const existingIds = new Set(newData.results.map((p) => p.id));
+        const itemsToKeep = items.value.filter((item) =>
+          existingIds.has(item.id)
+        );
+
+        if (itemsToKeep.length !== items.value.length) {
+          items.value = itemsToKeep;
+        }
+      }
+    },
+    { immediate: true }
   );
 
   const cartItems = computed(() => {
@@ -37,34 +54,23 @@
     <div class="mb-8">
       <h1 class="text-3xl font-bold mb-2">Корзина</h1>
       <p class="text-muted-foreground">
-        {{ cartItems.length }} товар{{
-          cartItems.length === 1 ? '' : cartItems.length < 5 ? 'а' : 'ов'
-        }}
-        в корзине
+        Товаров в корзине: {{ cartItems.length }} шт.
       </p>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
       <!-- Список товаров -->
       <div class="lg:col-span-2 space-y-4">
-        <template v-if="pending">
-          <CardSkeleton
-            v-for="n in 3"
-            :key="n"
-          />
-        </template>
-        <template v-else>
-          <ModuleCartCard
-            v-for="item in cartItems"
-            :key="item.product.id"
-            :product="item.product"
-            :quantity="item.quantity"
-            @update-quantity="updateQuantity"
-            @remove-item="removeItem"
-          />
-        </template>
+        <ModuleCartCard
+          v-for="item in cartItems"
+          :key="item.product.id"
+          :product="item.product"
+          :quantity="item.quantity"
+          @update-quantity="updateQuantity"
+          @remove-item="removeItem"
+        />
       </div>
-      <!-- Панель итогов -->
+
       <ModuleCartSummary :items="cartItems" />
     </div>
   </div>

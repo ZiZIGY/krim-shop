@@ -116,3 +116,40 @@ declare interface ApiProductsResponse {
     filters: CatalogFilters;
   };
 }
+
+declare interface ApiOrderResponse {
+  id: number;
+  full_name: string;
+  phone: string;
+  email: string;
+  city: string;
+  address: string;
+  comment: string;
+  payment_method: 'online' | 'cod';
+  delivery_type: string;
+  total_price: string;
+  status: string;
+  created_at: string;
+  items_brief: {
+    product_id: number;
+    product_title: string;
+    product_slug: string;
+    product_image: string;
+    quantity: number;
+    price_at_moment: string;
+    final_price: string;
+  }[];
+  services_brief: {
+    service_id: number;
+    service_name: string;
+    price_at_moment: string;
+  }[];
+  subtotal: string | number;
+  services_total: string | number;
+  delivery_base: string | number;
+  delivery_discount: string | number;
+  delivery_cost: string | number;
+  status_api: string;
+  pay_url?: string;
+  accepted_url?: string;
+}

@@ -64,6 +64,10 @@ export default defineNuxtConfig({
     storage: 'localStorage',
   },
 
+  pinia: {
+    storesDirs: ['./app/pinia'],
+  },
+
   vite: {
     plugins: [
       tailwindcss(),

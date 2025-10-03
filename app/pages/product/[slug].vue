@@ -77,7 +77,6 @@
     return price?.toLocaleString('ru-RU');
   };
 
-  // SEO
   useHead({
     title: `${product?.value?.title} - ${config.public.siteName}`,
     meta: [
@@ -96,13 +95,30 @@
     ],
   });
 
-  const { add } = useCart();
+  const { add, set, getCount } = useCart();
+
+  const cartQuantity = computed(() => getCount(product.value?.id || 0));
+  const isInCart = computed(() => cartQuantity.value > 0);
+
+  const updateQuantity = (quantity: number) => {
+    if (!product.value) return;
+    if (quantity === 0) {
+      set(product.value.id, 0);
+    } else {
+      set(product.value.id, quantity);
+    }
+  };
+
+  const addToCart = () => {
+    if (product.value) {
+      add(product.value.id);
+    }
+  };
 </script>
 
 <template>
   <div>
     <section class="container mx-auto px-4 py-8">
-      <!-- Хлебные крошки -->
       <UiBreadcrumb class="mb-8">
         <UiBreadcrumbList>
           <UiBreadcrumbItem>
@@ -129,12 +145,10 @@
         </UiBreadcrumbList>
       </UiBreadcrumb>
 
-      <!-- Первый блок: Слайдер + Информация о товаре -->
       <div
         v-if="product"
         class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12"
       >
-        <!-- Слайдер с фото -->
         <div class="space-y-4">
           <UiCarousel
             class="w-full"
@@ -159,7 +173,6 @@
               </UiCarouselItem>
             </UiCarouselContent>
 
-            <!-- Навигация слайдера -->
             <ClientOnly>
               <WidgetCarouselNavigation
                 :carousel-api="api"
@@ -169,11 +182,22 @@
           </UiCarousel>
         </div>
 
-        <!-- Информация о товаре -->
         <div class="space-y-6">
-          <!-- Название и бренд -->
           <div class="flex flex-col">
-            <h1 class="text-3xl font-bold mb-2">{{ product?.title }}</h1>
+            <div class="flex items-start justify-between">
+              <h1 class="text-3xl font-bold mb-2">{{ product?.title }}</h1>
+
+              <div
+                v-if="isInCart"
+                class="flex items-center gap-2 bg-primary/10 text-primary px-3 py-1.5 rounded-full text-sm font-medium"
+              >
+                <Icon
+                  name="mdi:cart-check"
+                  class="h-4 w-4"
+                />
+                В корзине
+              </div>
+            </div>
             <div
               v-if="product?.tags?.length"
               class="mt-4 flex flex-wrap gap-2"
@@ -188,21 +212,11 @@
             </div>
           </div>
 
-          <!-- Цены -->
           <div class="space-y-2">
             <div class="flex items-center gap-3">
               <span class="text-3xl font-bold text-primary">
                 {{ formatPrice(product?.price) }} ₽
               </span>
-              <!-- <span
-                v-if="
-                  product.originalPrice &&
-                  product.originalPrice !== product.price
-                "
-                class="text-xl text-muted-foreground line-through"
-              >
-                {{ formatPrice(product.originalPrice) }} ₽
-              </span> -->
             </div>
             <div
               v-if="product?.discount_price"
@@ -212,13 +226,13 @@
             </div>
           </div>
 
-          <!-- Кнопки действий -->
           <div class="space-y-3">
             <UiButton
+              v-if="!isInCart"
               size="lg"
               class="w-full"
               :disabled="!product?.in_stock"
-              @click="add(product.id)"
+              @click="addToCart"
             >
               <Icon
                 name="mdi:cart-plus"
@@ -226,42 +240,39 @@
               />
               Добавить в корзину
             </UiButton>
-
-            <UiButton
-              variant="outline"
-              size="lg"
-              class="w-full"
-              :disabled="!product?.in_stock"
+            <div
+              v-else
+              class="flex gap-3"
             >
-              <Icon
-                name="mdi:flash"
-                class="h-5 w-5 mr-2"
-              />
-              Купить в 1 клик
-            </UiButton>
+              <UiNumberField
+                :model-value="cartQuantity"
+                :min="0"
+                :max="99"
+                class="flex-1"
+                invert-wheel-change
+                @update:model-value="updateQuantity"
+              >
+                <UiNumberFieldContent>
+                  <UiNumberFieldDecrement />
+                  <UiNumberFieldInput class="text-center" />
+                  <UiNumberFieldIncrement />
+                </UiNumberFieldContent>
+              </UiNumberField>
+            </div>
+
+            <ModuleBuyInClick :disabled="!product.in_stock" />
           </div>
 
-          <!-- Быстрые действия -->
           <div class="flex gap-3 justify-end">
             <WidgetFavorite
               v-if="product"
               :product-id="product?.id"
               class="h-12 w-12"
             />
-            <UiButton
-              size="icon"
-              class="h-12 w-12"
-            >
-              <Icon
-                name="mdi:share-variant"
-                class="h-5 w-5"
-              />
-            </UiButton>
           </div>
         </div>
       </div>
 
-      <!-- Второй блок: Характеристики -->
       <motion.div
         class="space-y-8"
         :initial="{ opacity: 0, y: 20 }"
@@ -320,7 +331,6 @@
         </div>
       </motion.div>
 
-      <!-- Описание -->
       <div
         v-if="product?.description"
         class="mt-6"

@@ -1,4 +1,6 @@
 <script setup lang="ts">
+  import { motion } from 'motion-v';
+
   const config = useRuntimeConfig();
   const route = useRoute();
 
@@ -37,14 +39,17 @@
     <div
       class="grid gap-6 transition-all duration-300 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4"
     >
-      <ModuleCatalogCard
-        v-for="product in data?.results.results"
+      <motion.div
+        v-for="(product, idx) in data?.results.results"
         :key="product.id"
-        :product="product"
-      />
+        :initial="{ opacity: 0, y: 20 }"
+        :animate="{ opacity: 1, y: 0 }"
+        :transition="{ duration: 0.4, delay: idx * 0.05, ease: 'easeInOut' }"
+      >
+        <ModuleCatalogCard :product="product" />
+      </motion.div>
     </div>
 
-    <!-- Пагинация -->
     <div
       v-if="totalPages > 1"
       class="flex justify-center pt-8"
@@ -77,7 +82,6 @@
       </UiPagination>
     </div>
 
-    <!-- Пустое состояние -->
     <div
       v-if="!data?.results.results.length && status !== 'pending'"
       class="text-center py-12"
@@ -93,3 +97,5 @@
     </div>
   </div>
 </template>
+
+<style scoped></style>
